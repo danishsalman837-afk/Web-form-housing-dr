@@ -58,20 +58,11 @@
       letter-spacing: 0.3px;
     }
 
-    /* Professional Split DOB */
-    .dob-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 6px;
-    }
-    .dob-group select {
-      flex: 1;
-      padding: 12px;
-      border: 2px solid #e2e8f0;
-      cursor: pointer;
-    }
-    @media (max-width: 480px) {
-      .dob-group { flex-direction: column; gap: 6px; }
+    /* Masked DOB Input */
+    .dob-input {
+      letter-spacing: 2px;
+      font-weight: 700;
+      color: #1e40af;
     }
 
     input[type="text"],
@@ -228,20 +219,8 @@
         <label for="phone">Phone Number:</label>
         <input type="tel" id="phone" name="phone" placeholder="e.g. 07123 456789" required>
 
-        <label>Date of Birth (DOB):</label>
-        <div class="dob-group">
-          <select id="dob_day" title="Day"><option value="">DD</option></select>
-          <select id="dob_month" title="Month">
-            <option value="">Month</option>
-            <option value="January">January</option><option value="February">February</option>
-            <option value="March">March</option><option value="April">April</option>
-            <option value="May">May</option><option value="June">June</option>
-            <option value="July">July</option><option value="August">August</option>
-            <option value="September">September</option><option value="October">October</option>
-            <option value="November">November</option><option value="December">December</option>
-          </select>
-          <select id="dob_year" title="Year"><option value="">YYYY</option></select>
-        </div>
+        <label for="dob">Date of Birth (DOB):</label>
+        <input type="text" id="dob" name="dob" class="dob-input" placeholder="DD / MM / YYYY" maxlength="14">
 
       <label>Address</label>
       <textarea name="address" rows="2" required></textarea>
@@ -469,15 +448,17 @@
   </form>
 
   <script>
-    // Populate DOB Selectors
-    const daySel = document.getElementById('dob_day');
-    const yearSel = document.getElementById('dob_year');
-    for(let i=1; i<=31; i++) daySel.innerHTML += `<option value="${i}">${i}</option>`;
-    const currentYear = new Date().getFullYear();
-    for(let i=0; i<=90; i++) {
-      let y = currentYear - i;
-      yearSel.innerHTML += `<option value="${y}">${y}</option>`;
-    }
+    // Smart Masked DOB
+    const dobInput = document.getElementById('dob');
+    dobInput.addEventListener('input', function(e) {
+      let v = this.value.replace(/\D/g,'');
+      if (v.length > 8) v = v.substring(0,8);
+      let out = "";
+      if (v.length > 0) out += v.substring(0,2);
+      if (v.length >= 3) out += " / " + v.substring(2,4);
+      if (v.length >= 5) out += " / " + v.substring(4,8);
+      this.value = out;
+    });
 
     // Show/hide details based on Yes/No
     function toggleDetails(selectId, detailId) {
@@ -513,12 +494,6 @@
       e.preventDefault();
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
-
-      // Combine Split DOB
-      const d = document.getElementById("dob_day").value;
-      const m = document.getElementById("dob_month").value;
-      const y = document.getElementById("dob_year").value;
-      data.dob = (d && m && y) ? `${d} ${m} ${y}` : "";
 
       // Send data to server
       fetch("/api/submit", {
