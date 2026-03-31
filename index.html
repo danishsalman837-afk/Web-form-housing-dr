@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -182,7 +183,9 @@
         margin-top: 15px;
       }
 
-      input, select, textarea {
+      input,
+      select,
+      textarea {
         padding: 10px 12px;
         font-size: 16px;
       }
@@ -194,6 +197,7 @@
     }
   </style>
 </head>
+
 <body>
   <h1>Housing Disrepair Form</h1>
   <form id="disrepairForm">
@@ -301,13 +305,15 @@
 
       <div id="issuesDetails" class="hidden">
         <label style="margin-top: 15px; font-weight: bold;">Select issue type(s):</label>
-        
+
         <div style="margin-top: 10px;">
           <input type="checkbox" name="issueType" value="Faulty Electrics" id="check_electrics">
-          <label for="check_electrics" style="display: inline; font-weight: normal; margin-left: 5px;">Faulty Electrics</label>
+          <label for="check_electrics" style="display: inline; font-weight: normal; margin-left: 5px;">Faulty
+            Electrics</label>
         </div>
 
-        <div id="electricsQuestions" class="hidden" style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #ff6b6b;">
+        <div id="electricsQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #ff6b6b;">
           <label>What is the issue with the electrics?</label>
           <input type="text" name="electricsMainIssue" placeholder="Describe the electrical issue">
 
@@ -329,10 +335,12 @@
 
         <div style="margin-top: 15px;">
           <input type="checkbox" name="issueType" value="Heating / Boiler Issues" id="check_heating">
-          <label for="check_heating" style="display: inline; font-weight: normal; margin-left: 5px;">Heating / Boiler Issues</label>
+          <label for="check_heating" style="display: inline; font-weight: normal; margin-left: 5px;">Heating / Boiler
+            Issues</label>
         </div>
 
-        <div id="heatingQuestions" class="hidden" style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #4c6ef5;">
+        <div id="heatingQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #4c6ef5;">
           <label>What is the issue with the boiler?</label>
           <input type="text" name="heatingMainIssue" placeholder="Describe the boiler/heating issue">
 
@@ -354,10 +362,12 @@
 
         <div style="margin-top: 15px;">
           <input type="checkbox" name="issueType" value="Cracks / Structural Damage" id="check_structural">
-          <label for="check_structural" style="display: inline; font-weight: normal; margin-left: 5px;">Cracks / Structural Damage</label>
+          <label for="check_structural" style="display: inline; font-weight: normal; margin-left: 5px;">Cracks /
+            Structural Damage</label>
         </div>
 
-        <div id="structuralQuestions" class="hidden" style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #12b886;">
+        <div id="structuralQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #12b886;">
           <label>Where are the cracks or damages located?</label>
           <input type="text" name="structuralLocation" placeholder="Room(s) and specific area(s)">
 
@@ -418,7 +428,8 @@
     <!-- Additional Notes -->
     <div class="section">
       <label>Additional Notes</label>
-      <textarea name="additionalNotes" placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
+      <textarea name="additionalNotes"
+        placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
     </div>
 
     <button type="submit">Submit</button>
@@ -426,7 +437,7 @@
 
   <script>
     // Show/hide details based on Yes/No
-    function toggleDetails(selectId, detailId){
+    function toggleDetails(selectId, detailId) {
       const select = document.getElementById(selectId);
       const details = document.getElementById(detailId);
       select.addEventListener("change", () => {
@@ -437,7 +448,7 @@
     // Handle issue type checkboxes
     const issueCheckboxes = document.querySelectorAll('input[name="issueType"]');
     issueCheckboxes.forEach(checkbox => {
-      checkbox.addEventListener("change", function() {
+      checkbox.addEventListener("change", function () {
         const electricsCheck = document.getElementById("check_electrics").checked;
         const heatingCheck = document.getElementById("check_heating").checked;
         const structuralCheck = document.getElementById("check_structural").checked;
@@ -455,33 +466,54 @@
     toggleDetails("arrears", "arrearsDetails");
 
     // Form submit
-    document.getElementById("disrepairForm").addEventListener("submit", function(e){
+    document.getElementById("disrepairForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
-      
+
+      // Fix issueType array (FormData only keeps the last value when using Object.fromEntries)
+      data.issueType = formData.getAll("issueType");
+
       // Send data to server
-      fetch("/submit", {
+      fetch("/api/submit", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
       })
-      .then(response => {
-        if (response.ok) {
-          // Store in localStorage as backup
-          localStorage.setItem("formData", JSON.stringify(data));
-          alert("Form submitted successfully!");
-          // Redirect to admin page to see submissions
-          window.location.href = "/admin.html";
-        }
-      })
-      .catch(error => {
-        console.error("Error:", error);
-        alert("There was an error submitting the form. Please try again.");
-      });
+        .then(async response => {
+          if (response.ok) {
+            // Store in localStorage as backup
+            localStorage.setItem("formData", JSON.stringify(data));
+            alert("Form submitted successfully!");
+            // Reset the form instead of redirecting
+            document.getElementById("disrepairForm").reset();
+            // Hide all conditionally visible sections
+            document.getElementById("dampDetails").classList.add("hidden");
+            document.getElementById("leakDetails").classList.add("hidden");
+            document.getElementById("issuesDetails").classList.add("hidden");
+            document.getElementById("reportedDetails").classList.add("hidden");
+            document.getElementById("arrearsDetails").classList.add("hidden");
+            document.getElementById("electricsQuestions").classList.add("hidden");
+            document.getElementById("heatingQuestions").classList.add("hidden");
+            document.getElementById("structuralQuestions").classList.add("hidden");
+          } else {
+            let errorMsg = response.statusText;
+            try {
+              const errData = await response.json();
+              errorMsg = errData.error || errorMsg;
+            } catch (e) { }
+            alert("Error submitting form: " + errorMsg);
+            console.error("Server responded with error:", errorMsg);
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("There was an error submitting the form. Please try again.");
+        });
     });
   </script>
 </body>
+
 </html>
