@@ -1,81 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Housing Lead Capture — Agent Pro</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Housing Disrepair Form</title>
   <style>
-    :root {
-      --ios-blue: #007aff;
-      --ios-gray: #f2f2f7;
-      --ios-text: #1c1c1e;
-      --ios-label: #8e8e93;
-      --card-bg: rgba(255, 255, 255, 0.85);
+    * {
+      box-sizing: border-box;
     }
-
-    * { box-sizing: border-box; -webkit-font-smoothing: antialiased; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e4e7eb 100%);
-      color: var(--ios-text);
-      margin: 0;
-      padding: clamp(20px, 5vw, 60px) 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 40px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .form-container {
-      width: 100%;
-      max-width: 650px;
-      animation: fadeIn 0.8s cubic-bezier(0.2, 0, 0.2, 1);
     }
 
     h1 {
-      font-size: 34px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
+      color: #1a3a52;
       text-align: center;
+      font-size: 32px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    form {
+      background: white;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .section {
+      margin-bottom: clamp(15px, 4vw, 35px);
+      padding: clamp(15px, 5vw, 25px);
+      border: none;
+      border-left: 5px solid #1a3a52;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
     
-    .subtitle {
-      text-align: center;
-      color: var(--ios-label);
-      font-size: 17px;
-      margin-bottom: 40px;
+    .section:first-of-type {
+      border-left-color: #0066cc;
     }
-
-    .section-group {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-radius: 18px;
-      padding: 4px 0; /* iOS List style */
-      margin-bottom: 25px;
-      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-      border: 1px solid rgba(255,255,255,0.3);
-    }
-
-    .field-row {
-      padding: 14px 20px;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-      transition: background 0.2s;
-    }
-    .field-row:last-child { border-bottom: none; }
 
     label {
-      font-size: 13px;
+      display: block;
+      margin-top: 18px;
+      margin-bottom: 8px;
       font-weight: 600;
-      color: var(--ios-label);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 5px;
+      color: #2d3748;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+    }
+
+    /* Masked DOB Input */
+    .dob-input {
+      letter-spacing: 2px;
+      font-weight: 700;
+      color: #1e40af;
     }
 
     input[type="text"],
@@ -84,206 +71,381 @@
     select,
     textarea {
       width: 100%;
-      border: none;
-      background: transparent;
-      font-size: 17px;
-      color: var(--ios-text);
-      padding: 4px 0;
+      padding: 12px 15px;
+      margin-top: 6px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background-color: #ffffff;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
+      border-color: #0066cc;
+      background-color: #f0f7ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
       font-family: inherit;
     }
 
-    input::placeholder { color: #c7c7cc; }
-
-    textarea { min-height: 60px; resize: none; }
-
-    /* Custom Checkbox */
-    .checkbox-row {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 20px;
-    }
-    .checkbox-row label { margin-bottom: 0; text-transform: none; font-size: 17px; color: var(--ios-text); font-weight: 400; }
-    
     input[type="checkbox"] {
-      width: 26px;
-      height: 26px;
-      accent-color: var(--ios-blue);
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
       cursor: pointer;
+      accent-color: #0066cc;
     }
 
-    .btn-submit {
+    .hidden {
+      display: none;
+    }
+
+    button {
       width: 100%;
-      background: var(--ios-blue);
+      padding: 14px 20px;
+      margin-top: 30px;
+      background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
       color: white;
       border: none;
-      border-radius: 16px;
-      padding: 18px;
-      font-size: 17px;
+      border-radius: 6px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      margin-top: 30px;
-      transition: all 0.3s cubic-bezier(0.2, 0, 0.2, 1);
-      box-shadow: 0 8px 25px rgba(0, 122, 255, 0.3);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
     }
 
-    .btn-submit:hover {
-      transform: translateY(-2px) scale(1.01);
-      opacity: 0.9;
-    }
-    
-    .btn-submit:active { transform: scale(0.98); }
-
-    .hidden { display: none; }
-
-    /* Animation */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    button:hover {
+      background: linear-gradient(135deg, #0052a3 0%, #003d7a 100%);
+      box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+      transform: translateY(-2px);
     }
 
-    .dob-input { letter-spacing: 1px; color: var(--ios-blue); font-weight: 600; }
-
-    /* Conditional Styles */
-    .nested-section {
-      background: rgba(0,0,0,0.02);
-      margin: 0 10px 10px 10px;
-      border-radius: 12px;
-      border-left: 4px solid var(--ios-blue);
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(0, 102, 204, 0.3);
     }
 
-    @media (max-width: 480px) {
+    #electricsQuestions {
+      border-left: 3px solid #ff6b6b;
+      background-color: #fff5f5;
+      padding: 15px;
+      border-radius: 6px;
+      margin-left: 0;
+      margin-top: 15px;
+    }
+
+    #heatingQuestions {
+      border-left: 3px solid #4c6ef5;
+      background-color: #f0f3ff;
+      padding: 15px;
+      border-radius: 6px;
+      margin-left: 0;
+      margin-top: 15px;
+    }
+
+    #structuralQuestions {
+      border-left: 3px solid #12b886;
+      background-color: #f0fdf5;
+      padding: 15px;
+      border-radius: 6px;
+      margin-left: 0;
+      margin-top: 15px;
+    }
+
+    /* Optimized for Laptop & Large Screens */
+    @media (min-width: 1200px) {
+      body { padding: 60px 20px; }
+      form { padding: 50px; }
+    }
+
+    /* Optimized for Tablets */
+    @media (max-width: 900px) {
+      body { padding: 30px 15px; }
       h1 { font-size: 28px; }
-      body { padding: 40px 15px; }
-      .section-group { border-radius: 14px; }
+    }
+
+    /* Optimized for Phones */
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      h1 { font-size: 20px; margin-bottom: 20px; text-align: left; }
+      form { padding: 15px; border-radius: 8px; box-shadow: none; border: 1px solid #e2e8f0; }
+      .section { 
+        padding: 15px; 
+        margin-bottom: 15px; 
+        border-left-width: 3px; 
+      }
+      
+      label { font-size: 13px; margin-top: 12px; }
+      input, select, textarea { 
+        padding: 12px; 
+        font-size: 16px; 
+      }
+      
+      button { 
+        padding: 16px; 
+        font-size: 16px; 
+        border-radius: 8px;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="form-container">
-    <h1>Lead Capture</h1>
-    <p class="subtitle">Complete the client details below</p>
+  <h1>Housing Disrepair Form</h1>
+  <form id="disrepairForm">
 
-    <form id="disrepairForm">
-      <!-- Section: Client Profile -->
-      <div class="section-group">
-        <div class="field-row">
-          <label>Full Name</label>
-          <input type="text" name="name" placeholder="John Smith" required>
+    <!-- Basic Details -->
+    <div class="section">
+      <label>Name</label>
+      <input type="text" name="name" required>
+
+        <label for="email">Email Address:</label>
+        <input type="email" id="email" name="email" placeholder="e.g. name@example.com">
+
+        <label for="phone">Phone Number:</label>
+        <input type="tel" id="phone" name="phone" placeholder="e.g. 07123 456789" required>
+
+        <label for="dob">Date of Birth (DOB):</label>
+        <input type="text" id="dob" name="dob" class="dob-input" placeholder="DD / MM / YYYY" maxlength="14">
+
+      <label>Address</label>
+      <textarea name="address" rows="2" required></textarea>
+
+      <label>Are you a council tenant or a housing association tenant?</label>
+      <select name="tenantType" required>
+        <option value="">Select</option>
+        <option value="Council Tenant">Council Tenant</option>
+        <option value="Housing Association Tenant">Housing Association Tenant</option>
+      </select>
+
+      <label>How long have you been living in the property?</label>
+      <input type="text" name="livingDuration" required>
+    </div>
+
+    <!-- Damp / Mould -->
+    <div class="section">
+      <label>Is there any damp or mould in the property?</label>
+      <select name="damp" id="damp" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+
+      <div id="dampDetails" class="hidden">
+        <label>Where exactly is the damp or mould located?</label>
+        <input type="text" name="dampLocation">
+
+        <label>How many rooms are affected?</label>
+        <select name="dampRooms">
+          <option value="">Select</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+
+        <label>Is it on the walls, ceiling, or floor?</label>
+        <input type="text" name="dampSurface">
+
+        <label>How long have you had this issue?</label>
+        <input type="text" name="dampDuration">
+
+        <label>Do you know what caused it (leak, rain, pipe, roof)?</label>
+        <input type="text" name="dampCause">
+
+        <label>Has it damaged any belongings (bed, sofa, clothes, etc.)?</label>
+        <input type="text" name="dampDamage">
+
+        <label>Has it caused any health problems (breathing, asthma, allergies, skin issues)?</label>
+        <input type="text" name="dampHealth">
+      </div>
+    </div>
+
+    <!-- Leaks -->
+    <div class="section">
+      <label>Do you have any leaks in the property?</label>
+      <select name="leak" id="leak" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+
+      <div id="leakDetails" class="hidden">
+        <label>Where is the leak coming from?</label>
+        <input type="text" name="leakLocation">
+
+        <label>Is it from the roof, ceiling, pipe, bathroom, or kitchen?</label>
+        <input type="text" name="leakSource">
+
+        <label>When did the leak start? Is it still ongoing?</label>
+        <input type="text" name="leakStart">
+
+        <label>Has it caused damage to walls, ceiling, or floor?</label>
+        <input type="text" name="leakDamage">
+
+        <label>Any cracks or structural damage?</label>
+        <input type="text" name="leakCracks">
+
+        <label>Has it damaged your belongings?</label>
+        <input type="text" name="leakBelongings">
+      </div>
+    </div>
+
+    <!-- Electrics / Heating / Structural -->
+    <div class="section">
+      <label>Is there any cracks/damages, faulty electrics or heating issues in the property?</label>
+      <select name="issues" id="issues" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+
+      <div id="issuesDetails" class="hidden">
+        <label style="margin-top: 15px; font-weight: bold;">Select issue type(s):</label>
+
+        <div style="margin-top: 10px;">
+          <input type="checkbox" name="issueType" value="Faulty Electrics" id="check_electrics">
+          <label for="check_electrics" style="display: inline; font-weight: normal; margin-left: 5px;">Faulty
+            Electrics</label>
         </div>
-        <div class="field-row">
-          <label>Email Address</label>
-          <input type="email" name="email" placeholder="example@mail.com">
+
+        <div id="electricsQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #ff6b6b;">
+          <label>What is the issue with the electrics?</label>
+          <input type="text" name="electricsMainIssue" placeholder="Describe the electrical issue">
+
+          <label>Do lights flicker or stop working?</label>
+          <input type="text" name="electricsLights" placeholder="Yes/No - describe if yes">
+
+          <label>Do sockets not work?</label>
+          <input type="text" name="electricsSockets" placeholder="Yes/No - which sockets affected">
+
+          <label>Any exposed wires or sparks?</label>
+          <input type="text" name="electricsExposed" placeholder="Yes/No - describe location">
+
+          <label>Does the fuse box trip often?</label>
+          <input type="text" name="electricsFuseBox" placeholder="Yes/No - how often">
+
+          <label>Has this caused any danger or injury?</label>
+          <input type="text" name="electricsDanger" placeholder="Yes/No - describe any incidents">
         </div>
-        <div class="field-row">
-          <label>Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="07123 456789" required>
+
+        <div style="margin-top: 15px;">
+          <input type="checkbox" name="issueType" value="Heating / Boiler Issues" id="check_heating">
+          <label for="check_heating" style="display: inline; font-weight: normal; margin-left: 5px;">Heating / Boiler
+            Issues</label>
         </div>
-        <div class="field-row">
-          <label>Date of Birth</label>
-          <input type="text" id="dob" name="dob" class="dob-input" placeholder="DD / MM / YYYY" maxlength="14">
+
+        <div id="heatingQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #4c6ef5;">
+          <label>What is the issue with the boiler?</label>
+          <input type="text" name="heatingMainIssue" placeholder="Describe the boiler/heating issue">
+
+          <label>Do you have no heating, no hot water, or both?</label>
+          <input type="text" name="heatingType" placeholder="Heating/Hot Water/Both">
+
+          <label>Does it work sometimes or not at all?</label>
+          <input type="text" name="heatingFrequency" placeholder="Sometimes/Not at all">
+
+          <label>How long has this been going on?</label>
+          <input type="text" name="heatingDuration" placeholder="Duration (e.g., 2 weeks, 1 month)">
+
+          <label>Is it happening daily?</label>
+          <input type="text" name="heatingDaily" placeholder="Yes/No - describe pattern">
+
+          <label>Has it affected your health due to cold?</label>
+          <input type="text" name="heatingHealth" placeholder="Yes/No - describe health impacts">
+        </div>
+
+        <div style="margin-top: 15px;">
+          <input type="checkbox" name="issueType" value="Cracks / Structural Damage" id="check_structural">
+          <label for="check_structural" style="display: inline; font-weight: normal; margin-left: 5px;">Cracks /
+            Structural Damage</label>
+        </div>
+
+        <div id="structuralQuestions" class="hidden"
+          style="margin-left: 20px; margin-top: 15px; padding: 10px; background-color: #f9f9f9; border-left: 3px solid #12b886;">
+          <label>Where are the cracks or damages located?</label>
+          <input type="text" name="structuralLocation" placeholder="Room(s) and specific area(s)">
+
+          <label>How severe are they?</label>
+          <input type="text" name="structuralSeverity" placeholder="Minor/Moderate/Severe - describe">
+
+          <label>When did you first notice them?</label>
+          <input type="text" name="structuralWhen" placeholder="Date or timeframe">
+
+          <label>Are they getting worse over time?</label>
+          <input type="text" name="structuralWorsening" placeholder="Yes/No - describe changes">
         </div>
       </div>
+    </div>
 
-      <!-- Section: Location & Status -->
-      <div class="section-group">
-        <div class="field-row">
-          <label>Property Address</label>
-          <textarea name="address" placeholder="Line 1, Postcode" required></textarea>
-        </div>
-        <div class="field-row">
-          <label>Tenant Type</label>
-          <select name="tenantType" required>
-            <option value="">Select Tenant Type</option>
-            <option value="Council Tenant">Council Tenant</option>
-            <option value="Housing Association Tenant">Housing Association Tenant</option>
-          </select>
-        </div>
-        <div class="field-row">
-          <label>Residence Duration</label>
-          <input type="text" name="livingDuration" placeholder="e.g. 5 Years" required>
-        </div>
+    <!-- Reporting -->
+    <div class="section">
+      <label>Have you reported all the disrepairs over a month ago and have no date for it to be fixed?</label>
+      <select name="reported" id="reported" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+
+      <div id="reportedDetails" class="hidden">
+        <label>How many times have you notified your landlord? Was it through email, text, or calls?</label>
+        <input type="text" name="reportCount">
+
+        <label>When did you first report the issue?</label>
+        <input type="text" name="reportFirst">
+
+        <label>Did the landlord or council respond?</label>
+        <input type="text" name="reportResponse">
+
+        <label>Did they attempt any repairs?</label>
+        <input type="text" name="reportAttempt">
+
+        <label>Is the issue still not resolved?</label>
+        <input type="text" name="reportStatus">
       </div>
+    </div>
 
-      <!-- Section: Damage Details -->
-      <div class="section-group">
-        <div class="field-row">
-          <label>Damp or Mould?</label>
-          <select name="damp" id="damp" required>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-        <div id="dampDetails" class="hidden nested-section">
-          <div class="field-row"><label>Location</label><input type="text" name="dampLocation" placeholder="e.g. Master Bedroom"></div>
-          <div class="field-row"><label>Rooms Affected</label><input type="text" name="dampRooms" placeholder="e.g. 2"></div>
-          <div class="field-row"><label>Health Issues?</label><input type="text" name="dampHealth" placeholder="Yes/No"></div>
-        </div>
+    <!-- Rental arrears -->
+    <div class="section">
+      <label>Are you in rental arrears? (Must be less than £1000)</label>
+      <select name="arrears" id="arrears" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
 
-        <div class="field-row">
-          <label>Leaks Present?</label>
-          <select name="leak" id="leak" required>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-        <div id="leakDetails" class="hidden nested-section">
-          <div class="field-row"><label>Source</label><input type="text" name="leakSource" placeholder="e.g. Roof"></div>
-          <div class="field-row"><label>When Started?</label><input type="text" name="leakStart" placeholder="e.g. Last Month"></div>
-        </div>
+      <div id="arrearsDetails" class="hidden">
+        <label>If YES – confirm amount:</label>
+        <input type="text" name="arrearsAmount">
       </div>
+    </div>
 
-      <!-- Section: Other Issues -->
-      <div class="section-group">
-        <div class="field-row">
-          <label>Other Structural Issues?</label>
-          <select name="issues" id="issues" required>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-        <div id="issuesDetails" class="hidden nested-section">
-          <div class="checkbox-row field-row" style="flex-direction: row; border-bottom: none;">
-            <label>Faulty Electrics</label>
-            <input type="checkbox" name="issueType" value="Faulty Electrics" id="check_electrics">
-          </div>
-          <div class="checkbox-row field-row" style="flex-direction: row; border-bottom: none;">
-            <label>Heating / Boiler Issues</label>
-            <input type="checkbox" name="issueType" value="Heating / Boiler Issues" id="check_heating">
-          </div>
-          <div class="checkbox-row field-row" style="flex-direction: row; border-bottom: none;">
-            <label>Structural Cracks</label>
-            <input type="checkbox" name="issueType" value="Cracks / Structural Damage" id="check_structural">
-          </div>
-        </div>
-      </div>
+    <!-- Additional Notes -->
+    <div class="section">
+      <label>Additional Notes</label>
+      <textarea name="additionalNotes"
+        placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
+    </div>
 
-      <!-- Section: Financial & Reporting -->
-      <div class="section-group">
-        <div class="field-row">
-          <label>Landlord Reported over 1 month ago?</label>
-          <select name="reported" id="reported" required>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-        <div class="field-row">
-          <label>Rental Arrears? (<£1000)</label>
-          <select name="arrears" id="arrears" required>
-            <option value="No">No</option>
-            <option value="Yes">Yes</option>
-          </select>
-        </div>
-      </div>
-
-      <button type="submit" class="btn-submit">Submit Lead</button>
-    </form>
-  </div>
+    <button type="submit">Submit</button>
+  </form>
 
   <script>
-    // Masked DOB
+    // Smart Masked DOB
     const dobInput = document.getElementById('dob');
     dobInput.addEventListener('input', function(e) {
       let v = this.value.replace(/\D/g,'');
@@ -295,8 +457,8 @@
       this.value = out;
     });
 
-    // Toggle Logic
-    function setupToggle(selectId, detailId) {
+    // Show/hide details based on Yes/No
+    function toggleDetails(selectId, detailId) {
       const select = document.getElementById(selectId);
       const details = document.getElementById(detailId);
       select.addEventListener("change", () => {
@@ -304,34 +466,72 @@
       });
     }
 
-    setupToggle("damp", "dampDetails");
-    setupToggle("leak", "leakDetails");
-    setupToggle("issues", "issuesDetails");
-    setupToggle("reported", "reportedDetails");
-    setupToggle("arrears", "arrearsDetails");
+    // Handle issue type checkboxes
+    const issueCheckboxes = document.querySelectorAll('input[name="issueType"]');
+    issueCheckboxes.forEach(checkbox => {
+      checkbox.addEventListener("change", function () {
+        const electricsCheck = document.getElementById("check_electrics").checked;
+        const heatingCheck = document.getElementById("check_heating").checked;
+        const structuralCheck = document.getElementById("check_structural").checked;
 
-    // Form Submit
+        document.getElementById("electricsQuestions").classList.toggle("hidden", !electricsCheck);
+        document.getElementById("heatingQuestions").classList.toggle("hidden", !heatingCheck);
+        document.getElementById("structuralQuestions").classList.toggle("hidden", !structuralCheck);
+      });
+    });
+
+    toggleDetails("damp", "dampDetails");
+    toggleDetails("leak", "leakDetails");
+    toggleDetails("issues", "issuesDetails");
+    toggleDetails("reported", "reportedDetails");
+    toggleDetails("arrears", "arrearsDetails");
+
+    // Form submit
     document.getElementById("disrepairForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
-      data.issueType = formData.getAll("issueType");
 
+      // Send data to server
       fetch("/api/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify(data)
       })
-      .then(async response => {
-        if (response.ok) {
-          alert("Lead Recorded Successfully");
-          location.reload();
-        } else {
-          alert("Submission Error: Check console");
-        }
-      })
-      .catch(err => alert("Connection Error"));
+        .then(async response => {
+          if (response.ok) {
+            // Store in localStorage as backup
+            localStorage.setItem("formData", JSON.stringify(data));
+            alert("Form submitted successfully!");
+            // Reset the form instead of redirecting
+            document.getElementById("disrepairForm").reset();
+            // Hide all conditionally visible sections
+            document.getElementById("dampDetails").classList.add("hidden");
+            document.getElementById("leakDetails").classList.add("hidden");
+            document.getElementById("issuesDetails").classList.add("hidden");
+            document.getElementById("reportedDetails").classList.add("hidden");
+            document.getElementById("arrearsDetails").classList.add("hidden");
+            document.getElementById("electricsQuestions").classList.add("hidden");
+            document.getElementById("heatingQuestions").classList.add("hidden");
+            document.getElementById("structuralQuestions").classList.add("hidden");
+          } else {
+            let errorMsg = response.statusText;
+            try {
+              const errData = await response.json();
+              errorMsg = errData.error || errorMsg;
+            } catch (e) { }
+            alert("Error submitting form: " + errorMsg);
+            console.error("Server responded with error:", errorMsg);
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("There was an error submitting the form. Please try again.");
+        });
     });
   </script>
 </body>
+
 </html>
