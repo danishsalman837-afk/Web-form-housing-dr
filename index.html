@@ -58,8 +58,20 @@
       letter-spacing: 0.3px;
     }
 
-    label:first-child {
-      margin-top: 0;
+    /* Professional Split DOB */
+    .dob-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+    .dob-group select {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #e2e8f0;
+      cursor: pointer;
+    }
+    @media (max-width: 480px) {
+      .dob-group { flex-direction: column; gap: 6px; }
     }
 
     input[type="text"],
@@ -160,39 +172,42 @@
       margin-top: 15px;
     }
 
+    /* Optimized for Laptop & Large Screens */
+    @media (min-width: 1200px) {
+      body { padding: 60px 20px; }
+      form { padding: 50px; }
+    }
+
+    /* Optimized for Tablets */
+    @media (max-width: 900px) {
+      body { padding: 30px 15px; }
+      h1 { font-size: 28px; }
+    }
+
+    /* Optimized for Phones */
     @media (max-width: 600px) {
-      body {
-        padding: 20px 15px;
+      body { padding: 15px 10px; }
+      h1 { font-size: 22px; margin-bottom: 20px; }
+      form { padding: 20px 15px; }
+      .section { padding: 20px 15px; margin-bottom: 20px; }
+      
+      label { font-size: 13px; margin-top: 15px; }
+      input, select, textarea { 
+        padding: 12px; 
+        font-size: 16px; /* Prevents iOS auto-zoom on focus */
+      }
+      
+      button { 
+        padding: 16px; 
+        font-size: 16px; 
+        position: sticky;
+        bottom: 10px;
+        z-index: 100;
       }
 
-      form {
-        padding: 20px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-
-      .section {
-        padding: 18px;
-        margin-bottom: 25px;
-      }
-
-      label {
-        font-size: 13px;
-        margin-top: 15px;
-      }
-
-      input,
-      select,
-      textarea {
-        padding: 10px 12px;
-        font-size: 16px;
-      }
-
-      button {
-        padding: 12px 16px;
-        font-size: 15px;
+      #electricsQuestions, #heatingQuestions, #structuralQuestions {
+        padding: 12px;
+        margin-top: 10px;
       }
     }
   </style>
@@ -210,11 +225,23 @@
         <label for="email">Email Address:</label>
         <input type="email" id="email" name="email" placeholder="e.g. name@example.com">
 
-        <label for="dob">Date of Birth (DOB):</label>
-        <input type="date" id="dob" name="dob">
-
         <label for="phone">Phone Number:</label>
         <input type="tel" id="phone" name="phone" placeholder="e.g. 07123 456789" required>
+
+        <label>Date of Birth (DOB):</label>
+        <div class="dob-group">
+          <select id="dob_day" title="Day"><option value="">DD</option></select>
+          <select id="dob_month" title="Month">
+            <option value="">Month</option>
+            <option value="January">January</option><option value="February">February</option>
+            <option value="March">March</option><option value="April">April</option>
+            <option value="May">May</option><option value="June">June</option>
+            <option value="July">July</option><option value="August">August</option>
+            <option value="September">September</option><option value="October">October</option>
+            <option value="November">November</option><option value="December">December</option>
+          </select>
+          <select id="dob_year" title="Year"><option value="">YYYY</option></select>
+        </div>
 
       <label>Address</label>
       <textarea name="address" rows="2" required></textarea>
@@ -442,6 +469,16 @@
   </form>
 
   <script>
+    // Populate DOB Selectors
+    const daySel = document.getElementById('dob_day');
+    const yearSel = document.getElementById('dob_year');
+    for(let i=1; i<=31; i++) daySel.innerHTML += `<option value="${i}">${i}</option>`;
+    const currentYear = new Date().getFullYear();
+    for(let i=0; i<=90; i++) {
+      let y = currentYear - i;
+      yearSel.innerHTML += `<option value="${y}">${y}</option>`;
+    }
+
     // Show/hide details based on Yes/No
     function toggleDetails(selectId, detailId) {
       const select = document.getElementById(selectId);
@@ -477,8 +514,11 @@
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
 
-      // Fix issueType array (FormData only keeps the last value when using Object.fromEntries)
-      data.issueType = formData.getAll("issueType");
+      // Combine Split DOB
+      const d = document.getElementById("dob_day").value;
+      const m = document.getElementById("dob_month").value;
+      const y = document.getElementById("dob_year").value;
+      data.dob = (d && m && y) ? `${d} ${m} ${y}` : "";
 
       // Send data to server
       fetch("/api/submit", {
