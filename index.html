@@ -205,14 +205,7 @@
   <h1>Housing Disrepair Form</h1>
   <form id="disrepairForm">
 
-    <!-- Dialer Integration Section -->
-    <div class="section" style="background-color: #eff6ff; border-left-color: #3b82f6;">
-      <h3 style="margin-top: 0; color: #1e3a8a; font-size: 18px;">Dialer Intergration</h3>
-      <p style="font-size: 14px; color: #475569; margin-bottom: 12px; margin-top: 5px;">Fetch recent client contact details received via Webhook. Leave blank for the latest lead.</p>
-      <label for="dialerSearch">Search by Phone Number (Optional)</label>
-      <input type="tel" id="dialerSearch" placeholder="e.g. 07123 456789">
-      <button type="button" id="saveFetchBtn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 12px 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Save & Get Contact Details</button>
-    </div>
+    <!-- Contact Details Auto-Fetched -->
 
     <!-- Basic Details -->
     <div class="section">
@@ -367,19 +360,21 @@
         placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
     </div>
 
-    <button type="submit" id="submitFormBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Form</button>
+    <div style="display: flex; gap: 15px; margin-top: 30px;">
+      <button type="button" id="saveFetchBtn" style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Save & Get Contact Details</button>
+      <button type="submit" id="submitFormBtn" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Form</button>
+    </div>
   </form>
 
   <script>
     // Fetch Contact Details From Dialer Webhook
     document.getElementById("saveFetchBtn").addEventListener("click", async () => {
-      const phone = document.getElementById("dialerSearch").value.trim();
       const btn = document.getElementById("saveFetchBtn");
       const originalText = btn.innerText;
       btn.innerText = "Fetching...";
       
       try {
-        const url = phone ? `/api/dialer-lead?phone=${encodeURIComponent(phone)}` : `/api/dialer-lead`;
+        const url = `/api/dialer-lead`;
         const response = await fetch(url);
         
         if (response.ok) {
