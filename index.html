@@ -205,6 +205,15 @@
   <h1>Housing Disrepair Form</h1>
   <form id="disrepairForm">
 
+    <!-- Dialer Integration Section -->
+    <div class="section" style="background-color: #eff6ff; border-left-color: #3b82f6;">
+      <h3 style="margin-top: 0; color: #1e3a8a; font-size: 18px;">Dialer Intergration</h3>
+      <p style="font-size: 14px; color: #475569; margin-bottom: 12px; margin-top: 5px;">Fetch recent client contact details received via Webhook. Leave blank for the latest lead.</p>
+      <label for="dialerSearch">Search by Phone Number (Optional)</label>
+      <input type="tel" id="dialerSearch" placeholder="e.g. 07123 456789">
+      <button type="button" id="saveFetchBtn" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 12px 20px; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Save & Get Contact Details</button>
+    </div>
+
     <!-- Basic Details -->
     <div class="section">
       <label>Name</label>
@@ -358,10 +367,61 @@
         placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
     </div>
 
-    <button type="submit">Submit</button>
+    <button type="submit" id="submitFormBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Form</button>
   </form>
 
   <script>
+    // Fetch Contact Details From Dialer Webhook
+    document.getElementById("saveFetchBtn").addEventListener("click", async () => {
+      const phone = document.getElementById("dialerSearch").value.trim();
+      const btn = document.getElementById("saveFetchBtn");
+      const originalText = btn.innerText;
+      btn.innerText = "Fetching...";
+      
+      try {
+        const url = phone ? `/api/dialer-lead?phone=${encodeURIComponent(phone)}` : `/api/dialer-lead`;
+        const response = await fetch(url);
+        
+        if (response.ok) {
+          const lead = await response.json();
+          if (lead) {
+            // Check for various casing formats that a webhook might send
+            const setName = (val) => document.querySelector('[name="name"]').value = val || '';
+            
+            if (lead.name) setName(lead.name);
+            else if (lead.Name) setName(lead.Name);
+            else if (lead.first_name || lead.last_name) setName(`${lead.first_name || ''} ${lead.last_name || ''}`.trim());
+
+            const email = lead.email || lead.Email;
+            if (email) document.getElementById("email").value = email;
+
+            const phoneVal = lead.phone || lead.Phone || lead.phone_number;
+            if (phoneVal) document.getElementById("phone").value = phoneVal;
+
+            const dob = lead.dob || lead.DOB || lead.date_of_birth || lead.DateOfBirth;
+            if (dob) document.getElementById("dob").value = dob;
+
+            const address = lead.address || lead.Address;
+            if (address) document.querySelector('[name="address"]').value = address;
+
+            const postcode = lead.postcode || lead.Postcode;
+            if (postcode) document.querySelector('[name="postcode"]').value = postcode;
+
+            alert("Contact details loaded successfully!");
+          } else {
+            alert("No recent contact details found.");
+          }
+        } else {
+          alert("Failed to fetch contact details from the server.");
+        }
+      } catch (e) {
+        console.error("Error fetching lead:", e);
+        alert("An error occurred while fetching contact details.");
+      } finally {
+        btn.innerText = originalText;
+      }
+    });
+
     // Smart Masked DOB
     const dobInput = document.getElementById('dob');
     dobInput.addEventListener('input', function(e) {
