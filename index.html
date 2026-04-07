@@ -361,60 +361,39 @@
     </div>
 
     <div style="display: flex; gap: 15px; margin-top: 30px;">
-      <button type="button" id="saveFetchBtn" style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);">Save & Get Contact Details</button>
       <button type="submit" id="submitFormBtn" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Form</button>
     </div>
   </form>
 
   <script>
-    // Fetch Contact Details From Dialer Webhook
-    document.getElementById("saveFetchBtn").addEventListener("click", async () => {
-      const btn = document.getElementById("saveFetchBtn");
-      const originalText = btn.innerText;
-      btn.innerText = "Fetching...";
+    // Auto-fill contact details from URL parameters
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
       
-      try {
-        const url = `/api/dialer-lead`;
-        const response = await fetch(url);
-        
-        if (response.ok) {
-          const lead = await response.json();
-          if (lead) {
-            // Check for various casing formats that a webhook might send
-            const setName = (val) => document.querySelector('[name="name"]').value = val || '';
-            
-            if (lead.name) setName(lead.name);
-            else if (lead.Name) setName(lead.Name);
-            else if (lead.first_name || lead.last_name) setName(`${lead.first_name || ''} ${lead.last_name || ''}`.trim());
+      const nameVal = urlParams.get('name') || urlParams.get('Name');
+      if (nameVal) document.querySelector('[name="name"]').value = nameVal;
 
-            const email = lead.email || lead.Email;
-            if (email) document.getElementById("email").value = email;
+      const emailVal = urlParams.get('email') || urlParams.get('Email');
+      if (emailVal) document.getElementById("email").value = emailVal;
 
-            const phoneVal = lead.phone || lead.Phone || lead.phone_number;
-            if (phoneVal) document.getElementById("phone").value = phoneVal;
+      const phoneVal = urlParams.get('phone') || urlParams.get('Phone');
+      if (phoneVal) document.getElementById("phone").value = phoneVal;
 
-            const dob = lead.dob || lead.DOB || lead.date_of_birth || lead.DateOfBirth;
-            if (dob) document.getElementById("dob").value = dob;
-
-            const address = lead.address || lead.Address;
-            if (address) document.querySelector('[name="address"]').value = address;
-
-            const postcode = lead.postcode || lead.Postcode;
-            if (postcode) document.querySelector('[name="postcode"]').value = postcode;
-
-            alert("Contact details loaded successfully!");
-          } else {
-            alert("No recent contact details found.");
-          }
-        } else {
-          alert("Failed to fetch contact details from the server.");
+      let dobVal = urlParams.get('dob') || urlParams.get('DOB');
+      if (dobVal) {
+        // Convert formats like YYYY-MM-DD or YYYY*MM-DD to DD / MM / YYYY
+        const yyyymmddMatch = dobVal.match(/^(\d{4})\D(\d{2})\D(\d{2})$/);
+        if (yyyymmddMatch) {
+          dobVal = `${yyyymmddMatch[3]} / ${yyyymmddMatch[2]} / ${yyyymmddMatch[1]}`;
         }
-      } catch (e) {
-        console.error("Error fetching lead:", e);
-        alert("An error occurred while fetching contact details.");
-      } finally {
-        btn.innerText = originalText;
+        document.getElementById("dob").value = dobVal;
       }
+
+      const addressVal = urlParams.get('address') || urlParams.get('Address');
+      if (addressVal) document.querySelector('[name="address"]').value = addressVal;
+
+      const postcodeVal = urlParams.get('postcode') || urlParams.get('Postcode');
+      if (postcodeVal) document.querySelector('[name="postcode"]').value = postcodeVal;
     });
 
     // Smart Masked DOB
