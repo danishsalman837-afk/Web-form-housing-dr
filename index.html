@@ -43,7 +43,7 @@
       background-color: #f8f9fa;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-    
+
     .section:first-of-type {
       border-left-color: #0066cc;
     }
@@ -62,7 +62,7 @@
     .dob-input {
       letter-spacing: 2px;
       font-weight: 700;
-      color: #1e40af;
+      color: #2d3748;
     }
 
     input[type="text"],
@@ -165,36 +165,66 @@
 
     /* Optimized for Laptop & Large Screens */
     @media (min-width: 1200px) {
-      body { padding: 60px 20px; }
-      form { padding: 50px; }
+      body {
+        padding: 60px 20px;
+      }
+
+      form {
+        padding: 50px;
+      }
     }
 
     /* Optimized for Tablets */
     @media (max-width: 900px) {
-      body { padding: 30px 15px; }
-      h1 { font-size: 28px; }
+      body {
+        padding: 30px 15px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
     }
 
     /* Optimized for Phones */
     @media (max-width: 600px) {
-      body { padding: 10px; }
-      h1 { font-size: 20px; margin-bottom: 20px; text-align: left; }
-      form { padding: 15px; border-radius: 8px; box-shadow: none; border: 1px solid #e2e8f0; }
-      .section { 
-        padding: 15px; 
-        margin-bottom: 15px; 
-        border-left-width: 3px; 
+      body {
+        padding: 10px;
       }
-      
-      label { font-size: 13px; margin-top: 12px; }
-      input, select, textarea { 
-        padding: 12px; 
-        font-size: 16px; 
+
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        text-align: left;
       }
-      
-      button { 
-        padding: 16px; 
-        font-size: 16px; 
+
+      form {
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: none;
+        border: 1px solid #e2e8f0;
+      }
+
+      .section {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left-width: 3px;
+      }
+
+      label {
+        font-size: 13px;
+        margin-top: 12px;
+      }
+
+      input,
+      select,
+      textarea {
+        padding: 12px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 16px;
+        font-size: 16px;
         border-radius: 8px;
       }
     }
@@ -212,14 +242,14 @@
       <label>Name</label>
       <input type="text" name="name" required>
 
-        <label for="email">Email Address:</label>
-        <input type="email" id="email" name="email" placeholder="e.g. name@example.com">
+      <label for="email">Email Address:</label>
+      <input type="email" id="email" name="email" placeholder="e.g. name@example.com">
 
-        <label for="phone">Phone Number:</label>
-        <input type="tel" id="phone" name="phone" placeholder="e.g. 07123 456789" required>
+      <label for="phone">Phone Number:</label>
+      <input type="tel" id="phone" name="phone" placeholder="e.g. 07123 456789" required>
 
-        <label for="dob">Date of Birth (DOB):</label>
-        <input type="text" id="dob" name="dob" class="dob-input" placeholder="DD / MM / YYYY" maxlength="14">
+      <label for="dob">Date of Birth (DOB):</label>
+      <input type="text" id="dob" name="dob" class="dob-input" placeholder="DD / MM / YYYY" maxlength="14">
 
       <label>Address</label>
       <textarea name="address" rows="2" required></textarea>
@@ -309,7 +339,23 @@
     </div>
 
     <!-- Electrics / Heating / Structural -->
-    <div class='section'><label>Are there any Faulty Electrics in the property?</label><select name='issues_electrics' required><option value=''>Select</option><option value='No'>No</option><option value='Yes'>Yes</option></select></div><div class='section'><label>Are there any Heating / Boiler Issues?</label><select name='issues_heating' required><option value=''>Select</option><option value='No'>No</option><option value='Yes'>Yes</option></select></div><div class='section'><label>Are there any Cracks or Structural Damages?</label><select name='issues_structural' required><option value=''>Select</option><option value='No'>No</option><option value='Yes'>Yes</option></select></div>
+    <div class='section'><label>Are there any Faulty Electrics in the property?</label><select name='issues_electrics'
+        required>
+        <option value=''>Select</option>
+        <option value='No'>No</option>
+        <option value='Yes'>Yes</option>
+      </select></div>
+    <div class='section'><label>Are there any Heating / Boiler Issues?</label><select name='issues_heating' required>
+        <option value=''>Select</option>
+        <option value='No'>No</option>
+        <option value='Yes'>Yes</option>
+      </select></div>
+    <div class='section'><label>Are there any Cracks or Structural Damages?</label><select name='issues_structural'
+        required>
+        <option value=''>Select</option>
+        <option value='No'>No</option>
+        <option value='Yes'>Yes</option>
+      </select></div>
 
     <!-- Reporting -->
     <div class="section">
@@ -364,8 +410,12 @@
     </div>
 
     <div style="display: flex; gap: 15px; margin-top: 30px;">
-      <button type="button" id="saveDraftBtn" style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">Save Lead Data</button>
-      <button type="submit" id="submitFormBtn" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Lead Finalised</button>
+      <button type="button" id="saveDraftBtn"
+        style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">Save
+        Lead Data</button>
+      <button type="submit" id="submitFormBtn"
+        style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit
+        Lead Finalised</button>
     </div>
   </form>
 
@@ -374,68 +424,68 @@
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const phoneVal = urlParams.get('phone') || urlParams.get('Phone');
-      
+
       // 1. Initial fill from URL Params (as a starting point)
       const fillFromURL = () => {
-          const nameVal = urlParams.get('name') || urlParams.get('Name');
-          if (nameVal) document.querySelector('[name="name"]').value = nameVal;
+        const nameVal = urlParams.get('name') || urlParams.get('Name');
+        if (nameVal) document.querySelector('[name="name"]').value = nameVal;
 
-          const emailVal = urlParams.get('email') || urlParams.get('Email');
-          if (emailVal) document.getElementById("email").value = emailVal;
+        const emailVal = urlParams.get('email') || urlParams.get('Email');
+        if (emailVal) document.getElementById("email").value = emailVal;
 
-          if (phoneVal) document.getElementById("phone").value = phoneVal;
+        if (phoneVal) document.getElementById("phone").value = phoneVal;
 
-          let dobVal = urlParams.get('dob') || urlParams.get('DOB');
-          if (dobVal) {
-            const yyyymmddMatch = dobVal.match(/^(\d{4})\D(\d{2})\D(\d{2})$/);
-            if (yyyymmddMatch) dobVal = `${yyyymmddMatch[3]} / ${yyyymmddMatch[2]} / ${yyyymmddMatch[1]}`;
-            document.getElementById("dob").value = dobVal;
-          }
+        let dobVal = urlParams.get('dob') || urlParams.get('DOB');
+        if (dobVal) {
+          const yyyymmddMatch = dobVal.match(/^(\d{4})\D(\d{2})\D(\d{2})$/);
+          if (yyyymmddMatch) dobVal = `${yyyymmddMatch[3]} / ${yyyymmddMatch[2]} / ${yyyymmddMatch[1]}`;
+          document.getElementById("dob").value = dobVal;
+        }
 
-          const addressVal = urlParams.get('address') || urlParams.get('Address');
-          if (addressVal) document.querySelector('[name="address"]').value = addressVal;
+        const addressVal = urlParams.get('address') || urlParams.get('Address');
+        if (addressVal) document.querySelector('[name="address"]').value = addressVal;
 
-          const postcodeVal = urlParams.get('postcode') || urlParams.get('Postcode');
-          if (postcodeVal) document.querySelector('[name="postcode"]').value = postcodeVal;
+        const postcodeVal = urlParams.get('postcode') || urlParams.get('Postcode');
+        if (postcodeVal) document.querySelector('[name="postcode"]').value = postcodeVal;
       };
 
       fillFromURL();
 
       // 2. Fetch from DB if phone exists (this overrides URL if saved data exists)
       if (phoneVal) {
-          try {
-              const res = await fetch(`/api/get-lead?phone=${encodeURIComponent(phoneVal)}`);
-              if (res.ok) {
-                  const lead = await res.json();
-                  if (lead) {
-                      console.log("Loading saved data from database:", lead);
-                      // Fill the form with DB data
-                      const form = document.getElementById("disrepairForm");
-                      Object.keys(lead).forEach(key => {
-                          const input = form.querySelector(`[name="${key}"]`);
-                          if (input && lead[key] !== null) {
-                              input.value = lead[key];
-                              // Trigger any change events for conditional fields
-                              input.dispatchEvent(new Event('change'));
-                          }
-                      });
-                  }
-              }
-          } catch (err) {
-              console.error("Failed to load saved lead data:", err);
+        try {
+          const res = await fetch(`/api/get-lead?phone=${encodeURIComponent(phoneVal)}`);
+          if (res.ok) {
+            const lead = await res.json();
+            if (lead) {
+              console.log("Loading saved data from database:", lead);
+              // Fill the form with DB data
+              const form = document.getElementById("disrepairForm");
+              Object.keys(lead).forEach(key => {
+                const input = form.querySelector(`[name="${key}"]`);
+                if (input && lead[key] !== null) {
+                  input.value = lead[key];
+                  // Trigger any change events for conditional fields
+                  input.dispatchEvent(new Event('change'));
+                }
+              });
+            }
           }
+        } catch (err) {
+          console.error("Failed to load saved lead data:", err);
+        }
       }
     });
 
     // Smart Masked DOB
     const dobInput = document.getElementById('dob');
-    dobInput.addEventListener('input', function(e) {
-      let v = this.value.replace(/\D/g,'');
-      if (v.length > 8) v = v.substring(0,8);
+    dobInput.addEventListener('input', function (e) {
+      let v = this.value.replace(/\D/g, '');
+      if (v.length > 8) v = v.substring(0, 8);
       let out = "";
-      if (v.length > 0) out += v.substring(0,2);
-      if (v.length >= 3) out += " / " + v.substring(2,4);
-      if (v.length >= 5) out += " / " + v.substring(4,8);
+      if (v.length > 0) out += v.substring(0, 2);
+      if (v.length >= 3) out += " / " + v.substring(2, 4);
+      if (v.length >= 5) out += " / " + v.substring(4, 8);
       this.value = out;
     });
 
@@ -444,11 +494,11 @@
       const select = document.getElementById(selectId);
       const details = document.getElementById(detailId);
       if (select && details) {
-          select.addEventListener("change", () => {
-            details.classList.toggle("hidden", select.value !== "Yes");
-          });
-          // Also check initially
+        select.addEventListener("change", () => {
           details.classList.toggle("hidden", select.value !== "Yes");
+        });
+        // Also check initially
+        details.classList.toggle("hidden", select.value !== "Yes");
       }
     }
 
@@ -460,38 +510,38 @@
 
     const monthsArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     function convertDobToFullDate(val) {
-        if(!val || typeof val !== 'string') return val;
-        // Handle DD / MM / YYYY
-        if (val.includes('/')) {
-            const p = val.split('/').map(x => x.trim());
-            if (p.length === 3) {
-                const mIdx = parseInt(p[1]) - 1;
-                if (mIdx >= 0 && mIdx < 12) return `${parseInt(p[0])} ${monthsArr[mIdx]} ${p[2]}`;
-            }
+      if (!val || typeof val !== 'string') return val;
+      // Handle DD / MM / YYYY
+      if (val.includes('/')) {
+        const p = val.split('/').map(x => x.trim());
+        if (p.length === 3) {
+          const mIdx = parseInt(p[1]) - 1;
+          if (mIdx >= 0 && mIdx < 12) return `${parseInt(p[0])} ${monthsArr[mIdx]} ${p[2]}`;
         }
-        return val;
+      }
+      return val;
     }
 
     // "Save Lead Data" Logic (only saves)
-    document.getElementById("saveDraftBtn").addEventListener("click", function() {
-        const formData = new FormData(document.getElementById("disrepairForm"));
-        const data = Object.fromEntries(formData.entries());
-        
-        if (data.dob) data.dob = convertDobToFullDate(data.dob);
-        if (!data.phone) return alert("Please enter a phone number to save progress.");
+    document.getElementById("saveDraftBtn").addEventListener("click", function () {
+      const formData = new FormData(document.getElementById("disrepairForm"));
+      const data = Object.fromEntries(formData.entries());
 
-        fetch("/api/save-draft", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        })
+      if (data.dob) data.dob = convertDobToFullDate(data.dob);
+      if (!data.phone) return alert("Please enter a phone number to save progress.");
+
+      fetch("/api/save-draft", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
         .then(res => res.json())
         .then(resData => {
-            if (resData.success) {
-                alert("Progress saved successfully!");
-            } else {
-                alert("Error saving: " + (resData.error || "Unknown"));
-            }
+          if (resData.success) {
+            alert("Progress saved successfully!");
+          } else {
+            alert("Error saving: " + (resData.error || "Unknown"));
+          }
         })
         .catch(err => alert("Network Error: " + err.message));
     });
@@ -510,21 +560,21 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-      .then(async response => {
+        .then(async response => {
           if (response.ok) {
             alert("Lead Finalised and Submitted successfully!");
             document.getElementById("disrepairForm").reset();
             // Reset detail views
             ["dampDetails", "leakDetails", "reportedDetails", "arrearsDetails"].forEach(id => {
-                document.getElementById(id).classList.add("hidden");
+              document.getElementById(id).classList.add("hidden");
             });
           } else {
             let errorMsg = response.statusText;
             try { const errData = await response.json(); errorMsg = errData.error || errorMsg; } catch (e) { }
             alert("Error submitting: " + errorMsg);
           }
-      })
-      .catch(error => { alert("Submission error. Please try again."); });
+        })
+        .catch(error => { alert("Submission error. Please try again."); });
     });
   </script>
 </body>
