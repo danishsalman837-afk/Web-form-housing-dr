@@ -409,7 +409,8 @@
         placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
     </div>
 
-    <div style="display: flex; gap: 15px; margin-top: 30px;">
+    <div id="formStatus" style="display: none; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-weight: 600; text-align: center;"></div>
+    <div style="display: flex; gap: 15px; margin-top: 10px;">
       <button type="button" id="saveDraftBtn"
         style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">Save
         Lead Data</button>
@@ -418,6 +419,8 @@
         Lead Finalised</button>
     </div>
   </form>
+
+  <div id="toast" style="visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: opacity 0.5s, visibility 0.5s; opacity: 0;"></div>
 
   <script>
     // Auto-fill contact details from URL or DB
@@ -477,15 +480,53 @@
       }
     });
 
-    // Smart Masked DOB
+    // Smart Masked DOB with Validation
     const dobInput = document.getElementById('dob');
     dobInput.addEventListener('input', function (e) {
       let v = this.value.replace(/\D/g, '');
       if (v.length > 8) v = v.substring(0, 8);
+
+      let day = v.substring(0, 2);
+      let month = v.substring(2, 4);
+      let year = v.substring(4, 8);
+
+      // Validate Month
+      if (month.length === 2) {
+        let m = parseInt(month);
+        if (m === 0) month = "01";
+        if (m > 12) month = "12";
+      }
+
+      // Validate Day (initial max 31)
+      if (day.length === 2) {
+        let d = parseInt(day);
+        if (d === 0) day = "01";
+        if (d > 31) day = "31";
+      }
+
+      // Refine Day based on Month and Year
+      if (day.length === 2 && month.length === 2) {
+        let d = parseInt(day);
+        let m = parseInt(month);
+        let y = year.length === 4 ? parseInt(year) : 2024; // Use current year or 2024 for leap check
+
+        let maxDays = 31;
+        if ([4, 6, 9, 11].includes(m)) {
+          maxDays = 30;
+        } else if (m === 2) {
+          const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
+          maxDays = isLeap ? 29 : 28;
+        }
+
+        if (d > maxDays) {
+          day = maxDays.toString().padStart(2, '0');
+        }
+      }
+
       let out = "";
-      if (v.length > 0) out += v.substring(0, 2);
-      if (v.length >= 3) out += " / " + v.substring(2, 4);
-      if (v.length >= 5) out += " / " + v.substring(4, 8);
+      if (v.length > 0) out += day;
+      if (v.length >= 3) out += " / " + month;
+      if (v.length >= 5) out += " / " + year;
       this.value = out;
     });
 
@@ -508,6 +549,29 @@
     toggleDetails("reported", "reportedDetails");
     toggleDetails("arrears", "arrearsDetails");
 
+    // Toast & Status Function
+    function showStatus(message, isError = false) {
+      // 1. Show Toast
+      const toast = document.getElementById("toast");
+      toast.innerText = message;
+      toast.style.backgroundColor = isError ? "#ef4444" : "#10b981";
+      toast.style.visibility = "visible";
+      toast.style.opacity = "1";
+      
+      // 2. Show in-form status message
+      const statusEl = document.getElementById("formStatus");
+      statusEl.innerText = message;
+      statusEl.style.display = "block";
+      statusEl.style.backgroundColor = isError ? "#fee2e2" : "#dcfce7";
+      statusEl.style.color = isError ? "#dc2626" : "#16a34a";
+      statusEl.style.border = `1px solid ${isError ? '#fecaca' : '#bbf7d0'}`;
+
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => { toast.style.visibility = "hidden"; }, 500);
+      }, 4000);
+    }
+
     const monthsArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     function convertDobToFullDate(val) {
       if (!val || typeof val !== 'string') return val;
@@ -528,7 +592,7 @@
       const data = Object.fromEntries(formData.entries());
 
       if (data.dob) data.dob = convertDobToFullDate(data.dob);
-      if (!data.phone) return alert("Please enter a phone number to save progress.");
+      if (!data.phone) return showStatus("Please enter a phone number to save progress.", true);
 
       fetch("/api/save-draft", {
         method: "POST",
@@ -538,12 +602,12 @@
         .then(res => res.json())
         .then(resData => {
           if (resData.success) {
-            alert("Progress saved successfully!");
+            showStatus("Progress saved successfully!");
           } else {
-            alert("Error saving: " + (resData.error || "Unknown"));
+            showStatus("Error saving: " + (resData.error || "Unknown"), true);
           }
         })
-        .catch(err => alert("Network Error: " + err.message));
+        .catch(err => showStatus("Network Error: " + err.message, true));
     });
 
     // Form submit (Finalize)
@@ -562,7 +626,7 @@
       })
         .then(async response => {
           if (response.ok) {
-            alert("Lead Finalised and Submitted successfully!");
+            showStatus("Lead finalized and submitted successfully!");
             document.getElementById("disrepairForm").reset();
             // Reset detail views
             ["dampDetails", "leakDetails", "reportedDetails", "arrearsDetails"].forEach(id => {
@@ -571,10 +635,10 @@
           } else {
             let errorMsg = response.statusText;
             try { const errData = await response.json(); errorMsg = errData.error || errorMsg; } catch (e) { }
-            alert("Error submitting: " + errorMsg);
+            showStatus("Error submitting: " + errorMsg, true);
           }
         })
-        .catch(error => { alert("Submission error. Please try again."); });
+        .catch(error => { showStatus("Submission error. Please try again.", true); });
     });
   </script>
 </body>
