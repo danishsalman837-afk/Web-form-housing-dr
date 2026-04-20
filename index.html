@@ -234,6 +234,7 @@
 <body>
   <h1>Housing Disrepair Form</h1>
   <form id="disrepairForm">
+    <input type="hidden" name="agent_name" id="agent_name">
 
     <!-- Contact Details Auto-Fetched -->
 
@@ -268,7 +269,7 @@
       <input type="text" name="landlordName" placeholder="e.g. Camden Council or ABC Housing" required>
 
       <label>How long have you been living in the property?</label>
-      <input type="text" name="livingDuration" required>
+      <textarea name="livingDuration" rows="1" required></textarea>
     </div>
 
     <!-- Damp / Mould -->
@@ -282,7 +283,7 @@
 
       <div id="dampDetails" class="hidden">
         <label>Where exactly is the damp or mould located?</label>
-        <input type="text" name="dampLocation">
+        <textarea name="dampLocation" rows="1"></textarea>
 
         <label>How many rooms are affected?</label>
         <select name="dampRooms">
@@ -295,19 +296,19 @@
         </select>
 
         <label>Is it on the walls, ceiling, or floor?</label>
-        <input type="text" name="dampSurface">
+        <textarea name="dampSurface" rows="1"></textarea>
 
         <label>How long have you had this issue?</label>
-        <input type="text" name="dampDuration">
+        <textarea name="dampDuration" rows="1"></textarea>
 
         <label>Do you know what caused it (leak, rain, pipe, roof)?</label>
-        <input type="text" name="dampCause">
+        <textarea name="dampCause" rows="1"></textarea>
 
         <label>Has it damaged any belongings (bed, sofa, clothes, etc.)?</label>
-        <input type="text" name="dampDamage">
+        <textarea name="dampDamage" rows="1"></textarea>
 
         <label>Has it caused any health problems (breathing, asthma, allergies, skin issues)?</label>
-        <input type="text" name="dampHealth">
+        <textarea name="dampHealth" rows="1"></textarea>
       </div>
     </div>
 
@@ -322,22 +323,22 @@
 
       <div id="leakDetails" class="hidden">
         <label>Where is the leak coming from?</label>
-        <input type="text" name="leakLocation">
+        <textarea name="leakLocation" rows="1"></textarea>
 
         <label>Is it from the roof, ceiling, pipe, bathroom, or kitchen?</label>
-        <input type="text" name="leakSource">
+        <textarea name="leakSource" rows="1"></textarea>
 
         <label>When did the leak start? Is it still ongoing?</label>
-        <input type="text" name="leakStart">
+        <textarea name="leakStart" rows="1"></textarea>
 
         <label>Has it caused damage to walls, ceiling, or floor?</label>
-        <input type="text" name="leakDamage">
+        <textarea name="leakDamage" rows="1"></textarea>
 
         <label>Any cracks or structural damage?</label>
-        <input type="text" name="leakCracks">
+        <textarea name="leakCracks" rows="1"></textarea>
 
         <label>Has it damaged your belongings?</label>
-        <input type="text" name="leakBelongings">
+        <textarea name="leakBelongings" rows="1"></textarea>
       </div>
     </div>
 
@@ -381,22 +382,22 @@
 
       <div id="reportedDetails" class="hidden">
         <label>How many times have you notified your landlord? Was it through email, text, or calls?</label>
-        <input type="text" name="reportCount">
+        <textarea name="reportCount" rows="1"></textarea>
 
         <label>When did you first report the issue?</label>
-        <input type="text" name="reportFirst">
+        <textarea name="reportFirst" rows="1"></textarea>
 
         <label>When did you last report to the landlord about the disrepair?</label>
-        <input type="text" name="reportLast" placeholder="e.g. March 2025, last week, 01/03/2025">
+        <textarea name="reportLast" rows="1" placeholder="e.g. March 2025, last week, 01/03/2025"></textarea>
 
         <label>Did the landlord or council respond?</label>
-        <input type="text" name="reportResponse">
+        <textarea name="reportResponse" rows="1"></textarea>
 
         <label>Did they attempt any repairs?</label>
-        <input type="text" name="reportAttempt">
+        <textarea name="reportAttempt" rows="1"></textarea>
 
         <label>Is the issue still not resolved?</label>
-        <input type="text" name="reportStatus">
+        <textarea name="reportStatus" rows="1"></textarea>
       </div>
     </div>
 
@@ -463,6 +464,9 @@
 
         const postcodeVal = urlParams.get('postcode') || urlParams.get('Postcode');
         if (postcodeVal) document.querySelector('[name="postcode"]').value = postcodeVal;
+
+        const agentName = urlParams.get('agent_name') || urlParams.get('Agent') || urlParams.get('agent');
+        if (agentName) document.getElementById("agent_name").value = agentName;
       };
 
       fillFromURL();
@@ -561,6 +565,22 @@
     toggleDetails("leak", "leakDetails");
     toggleDetails("reported", "reportedDetails");
     toggleDetails("arrears", "arrearsDetails");
+
+    // Auto-expanding textareas
+    function autoExpand(element) {
+      element.style.height = 'auto';
+      element.style.height = element.scrollHeight + 'px';
+    }
+
+    document.querySelectorAll('textarea').forEach(textarea => {
+      textarea.addEventListener('input', function() {
+        autoExpand(this);
+      });
+      // Initial expansion for pre-filled data
+      if (textarea.value) {
+        setTimeout(() => autoExpand(textarea), 0);
+      }
+    });
 
     // Toast & Status Function
     function showStatus(message, isError = false) {
