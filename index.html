@@ -5,107 +5,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Housing Disrepair Form</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #0A84FF;
-      --primary-hover: #0071E3;
-      --primary-light: rgba(10, 132, 255, 0.1);
-      --bg: #F2F2F7;
-      --surface: #FFFFFF;
-      --text-main: #1C1C1E;
-      --text-muted: #636366;
-      --text-placeholder: #AEAEB2;
-      --border: rgba(60, 60, 67, 0.12);
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-      --r-md: 12px;
-      --r-lg: 18px;
-    }
-
     * {
       box-sizing: border-box;
-      -webkit-font-smoothing: antialiased;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-main);
-      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 40px 20px;
-      line-height: 1.5;
-    }
-
-    .form-wrapper {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
-    }
-
-    .header-box {
-      text-align: center;
-      margin-bottom: 40px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
     }
 
     h1 {
+      color: #1a3a52;
+      text-align: center;
       font-size: 32px;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin: 0 0 8px;
-      color: var(--text-main);
-    }
-
-    .header-box p {
-      color: var(--text-muted);
-      font-size: 15px;
-      font-weight: 500;
+      margin-bottom: 10px;
+      font-weight: 700;
     }
 
     form {
-      background: var(--surface);
+      background: white;
       padding: 40px;
-      border-radius: var(--r-lg);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     }
 
     .section {
-      margin-bottom: 35px;
-      padding: 24px;
-      background: #F8F9FA;
-      border-radius: var(--r-md);
-      border: 1px solid var(--border);
+      margin-bottom: clamp(15px, 4vw, 35px);
+      padding: clamp(15px, 5vw, 25px);
+      border: none;
+      border-left: 5px solid #1a3a52;
+      border-radius: 8px;
+      background-color: #f8f9fa;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
-
-    .section-title {
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-title::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
+    
+    .section:first-of-type {
+      border-left-color: #0066cc;
     }
 
     label {
       display: block;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text-muted);
       margin-top: 18px;
-      margin-bottom: 6px;
-      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 14px;
       letter-spacing: 0.3px;
+    }
+
+    /* Masked DOB Input */
+    .dob-input {
+      letter-spacing: 2px;
+      font-weight: 700;
+      color: #2d3748;
     }
 
     input[type="text"],
@@ -114,131 +71,144 @@
     select,
     textarea {
       width: 100%;
-      padding: 12px 16px;
+      padding: 12px 15px;
+      margin-top: 6px;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 14px;
       font-family: inherit;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text-main);
-      background-color: var(--surface);
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease-out;
+      background-color: #ffffff;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    select:focus,
+    textarea:focus {
       outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px var(--primary-light);
-      background-color: #fff;
-    }
-
-    select {
-      appearance: none;
-      background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23636366%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%226%209%2012%2015%2018%209%22%3E%3C/polyline%3E%3C/svg%3E');
-      background-repeat: no-repeat;
-      background-position: right 14px center;
-      background-size: 16px;
-      padding-right: 40px;
+      border-color: #0066cc;
+      background-color: #f0f7ff;
+      box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
     }
 
     textarea {
       resize: vertical;
-      min-height: 90px;
+      min-height: 80px;
+      font-family: inherit;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 8px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #0066cc;
     }
 
     .hidden {
       display: none;
     }
 
+    button {
+      width: 100%;
+      padding: 14px 20px;
+      margin-top: 30px;
+      background: linear-gradient(135deg, #0066cc 0%, #004999 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease-out;
+      box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #0052a3 0%, #003d7a 100%);
+      box-shadow: 0 6px 20px rgba(0, 102, 204, 0.4);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 10px rgba(0, 102, 204, 0.3);
+    }
+
+    #electricsQuestions, #heatingQuestions, #structuralQuestions {
+      border-left: 3px solid #ff6b6b;
+      background-color: #fff5f5;
+      padding: 15px;
+      border-radius: 6px;
+      margin-left: 0;
+      margin-top: 15px;
+    }
+
     .details-box {
       margin-top: 15px;
-      padding: 20px;
-      background: var(--bg);
-      border-radius: 12px;
-      border-left: 4px solid var(--primary);
-      animation: slideDown 0.3s ease-out;
+      padding: 15px;
+      background-color: #f0f4f8;
+      border-left: 3px solid #0066cc;
+      border-radius: 6px;
     }
 
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Optimized for Laptop & Large Screens */
+    @media (min-width: 1200px) {
+      body {
+        padding: 60px 20px;
+      }
+      form {
+        padding: 50px;
+      }
     }
 
-    .btn-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-top: 40px;
+    /* Optimized for Tablets */
+    @media (max-width: 900px) {
+      body {
+        padding: 30px 15px;
+      }
+      h1 {
+        font-size: 28px;
+      }
     }
 
-    button {
-      padding: 16px 24px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    #saveDraftBtn {
-      background: var(--surface);
-      color: var(--primary);
-      border: 1.5px solid var(--primary);
-    }
-
-    #saveDraftBtn:hover {
-      background: var(--primary-light);
-    }
-
-    #submitFormBtn {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 4px 12px rgba(10, 132, 255, 0.3);
-    }
-
-    #submitFormBtn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(10, 132, 255, 0.4);
-    }
-
-    #submitFormBtn:active {
-      transform: translateY(0);
-    }
-
-    #formStatus {
-      padding: 14px;
-      border-radius: 10px;
-      margin-bottom: 20px;
-      font-weight: 600;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    /* Tablet/Mobile tweaks */
+    /* Optimized for Phones */
     @media (max-width: 600px) {
-      body { padding: 20px 15px; }
-      form { padding: 24px 16px; }
-      .btn-group { grid-template-columns: 1fr; }
-      h1 { font-size: 24px; }
+      body {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+      form {
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: none;
+        border: 1px solid #e2e8f0;
+      }
+      .section {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-left-width: 3px;
+      }
+      label {
+        font-size: 13px;
+        margin-top: 12px;
+      }
+      input, select, textarea {
+        padding: 12px;
+        font-size: 16px;
+      }
+      button {
+        padding: 16px;
+        font-size: 16px;
+        border-radius: 8px;
+      }
     }
   </style>
-</head>
-
-<body>
-  <div class="form-wrapper">
-    <div class="header-box">
-      <h1>Housing Disrepair Form</h1>
-      <p>Please complete the following details for your application.</p>
-    </div>
-
-    <form id="disrepairForm">
-      <input type="hidden" name="agent_name" id="agent_name">
 </head>
 
 <body>
@@ -246,12 +216,9 @@
   <form id="disrepairForm">
     <input type="hidden" name="agent_name" id="agent_name">
 
-    <!-- Contact Details Auto-Fetched -->
-
-      <!-- Basic Details -->
-      <div class="section">
-        <div class="section-title">Basic Details</div>
-        <label>Name</label>
+    <!-- Basic Details -->
+    <div class="section">
+      <label>Name</label>
       <input type="text" name="name" required>
 
       <label for="email">Email Address:</label>
@@ -283,10 +250,9 @@
       <textarea name="livingDuration" rows="1" required></textarea>
     </div>
 
-      <!-- Damp / Mould -->
-      <div class="section">
-        <div class="section-title">Damp / Mould</div>
-        <label>Is there any damp or mould in the property?</label>
+    <!-- Damp / Mould -->
+    <div class="section">
+      <label>Is there any damp or mould in the property?</label>
       <select name="damp" id="damp" required>
         <option value="">Select</option>
         <option value="No">No</option>
@@ -324,10 +290,9 @@
       </div>
     </div>
 
-      <!-- Leaks -->
-      <div class="section">
-        <div class="section-title">Leaks</div>
-        <label>Do you have any leaks in the property?</label>
+    <!-- Leaks -->
+    <div class="section">
+      <label>Do you have any leaks in the property?</label>
       <select name="leak" id="leak" required>
         <option value="">Select</option>
         <option value="No">No</option>
@@ -355,33 +320,33 @@
       </div>
     </div>
 
-      <!-- Faulty Issues -->
-      <div class="section">
-        <div class="section-title">Faulty Issues</div>
-        <label>Are there any Faulty Electrics in the property?</label><select name='issues_electrics'
-        required>
-        <option value=''>Select</option>
-        <option value='No'>No</option>
-        <option value='Yes'>Yes</option>
+    <!-- Faulty Issues -->
+    <div class="section">
+      <label>Are there any Faulty Electrics in the property?</label>
+      <select name="issues_electrics" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
       </select>
-        <label>Are there any Heating / Boiler Issues?</label>
-        <select name='issues_heating' required>
-          <option value=''>Select</option>
-          <option value='No'>No</option>
-          <option value='Yes'>Yes</option>
-        </select>
-        <label>Are there any Cracks or Structural Damages?</label>
-        <select name='issues_structural' required>
-          <option value=''>Select</option>
-          <option value='No'>No</option>
-          <option value='Yes'>Yes</option>
-        </select>
-      </div>
+      
+      <label>Are there any Heating / Boiler Issues?</label>
+      <select name="issues_heating" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+      
+      <label>Are there any Cracks or Structural Damages?</label>
+      <select name="issues_structural" required>
+        <option value="">Select</option>
+        <option value="No">No</option>
+        <option value="Yes">Yes</option>
+      </select>
+    </div>
 
-      <!-- Already Submitted Claim -->
-      <div class="section">
-        <div class="section-title">Existing Claim</div>
-        <label>Have you already submitted a housing disrepair claim?</label>
+    <!-- Already Submitted Claim -->
+    <div class="section">
+      <label>Have you already submitted a housing disrepair claim?</label>
       <select name="alreadySubmitted" id="alreadySubmitted" required>
         <option value="">Select</option>
         <option value="No">No</option>
@@ -389,10 +354,9 @@
       </select>
     </div>
 
-      <!-- Reporting -->
-      <div class="section">
-        <div class="section-title">Landlord Reporting</div>
-        <label>Have you reported all the disrepairs over a month ago and have no date for it to be fixed?</label>
+    <!-- Reporting -->
+    <div class="section">
+      <label>Have you reported all the disrepairs over a month ago and have no date for it to be fixed?</label>
       <select name="reported" id="reported" required>
         <option value="">Select</option>
         <option value="No">No</option>
@@ -420,47 +384,45 @@
       </div>
     </div>
 
-      <!-- Tenancy Verification Section -->
-      <div class="section">
-        <div class="section-title">Tenancy Verification</div>
-        <label>Is the tenancy agreement in your name?</label>
-        <select name="tenancy_on_name" id="tenancy_on_name" required>
-          <option value="">Select Option</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
+    <!-- Tenancy Verification Section -->
+    <div class="section">
+      <label>Is the tenancy agreement in your name?</label>
+      <select name="tenancy_on_name" id="tenancy_on_name" required>
+        <option value="">Select</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <div id="tenancyDetails" class="hidden details-box">
+        <label>Is it a joint tenancy or an individual tenancy?</label>
+        <select name="tenancy_type" id="tenancy_type">
+          <option value="">Select</option>
+          <option value="Joint">Joint</option>
+          <option value="Individual">Individual</option>
         </select>
 
-        <div id="tenancyDetails" class="hidden details-box">
-          <label>Is it a joint tenancy or an individual tenancy?</label>
-          <select name="tenancy_type" id="tenancy_type">
-            <option value="">Select Option</option>
-            <option value="Joint">Joint</option>
-            <option value="Individual">Individual</option>
+        <div id="jointTenancyDetails" class="hidden">
+          <label>Is your name included on the joint agreement?</label>
+          <select name="is_name_on_joint" id="is_name_on_joint">
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
 
-          <div id="jointTenancyDetails" class="hidden">
-            <label>Is your name included on the joint agreement?</label>
-            <select name="is_name_on_joint" id="is_name_on_joint">
-              <option value="">Select Option</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
+          <label>Name of the other person:</label>
+          <input type="text" name="other_tenant_name" id="other_tenant_name">
+        </div>
 
-            <label>Name of the other person:</label>
-            <input type="text" name="other_tenant_name" id="other_tenant_name">
-          </div>
-
-          <div id="individualTenancyDetails" class="hidden">
-            <label>Can you please confirm the full name of the tenant on the agreement:</label>
-            <input type="text" name="actual_tenant_fullname" id="actual_tenant_fullname">
-          </div>
+        <div id="individualTenancyDetails" class="hidden">
+          <label>Can you please confirm the full name of the tenant on the agreement:</label>
+          <input type="text" name="actual_tenant_fullname" id="actual_tenant_fullname">
         </div>
       </div>
+    </div>
 
-      <!-- Rental arrears -->
-      <div class="section">
-        <div class="section-title">Rental Arrears</div>
-        <label>Are you in rental arrears? (Must be less than £1000)</label>
+    <!-- Rental arrears -->
+    <div class="section">
+      <label>Are you in rental arrears? (Must be less than £1000)</label>
       <select name="arrears" id="arrears" required>
         <option value="">Select</option>
         <option value="No">No</option>
@@ -473,21 +435,19 @@
       </div>
     </div>
 
-      <!-- Additional Notes -->
-      <div class="section">
-        <div class="section-title">Additional Info</div>
-        <label>Additional Notes</label>
+    <!-- Additional Notes -->
+    <div class="section">
+      <label>Additional Notes</label>
       <textarea name="additionalNotes"
         placeholder="Please provide any additional information or notes that you would like to include with your application..."></textarea>
     </div>
 
-      <div id="formStatus" style="display: none;"></div>
-      <div class="btn-group">
-        <button type="button" id="saveDraftBtn">Save Draft</button>
-        <button type="submit" id="submitFormBtn">Finalize Submission</button>
-      </div>
-    </form>
-  </div>
+    <div id="formStatus" style="display: none; padding: 12px; border-radius: 6px; margin-bottom: 20px; font-weight: 600; text-align: center;"></div>
+    <div style="display: flex; gap: 15px; margin-top: 10px;">
+      <button type="button" id="saveDraftBtn" style="margin-top: 0; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);">Save Lead Data</button>
+      <button type="submit" id="submitFormBtn" style="margin-top: 0; background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);">Submit Lead Finalised</button>
+    </div>
+  </form>
 
   <div id="toast" style="visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: opacity 0.2s, visibility 0.2s; opacity: 0;"></div>
 
@@ -497,50 +457,39 @@
       const urlParams = new URLSearchParams(window.location.search);
       const phoneVal = urlParams.get('phone') || urlParams.get('Phone');
 
-      // 1. Initial fill from URL Params (as a starting point)
       const fillFromURL = () => {
         const nameVal = urlParams.get('name') || urlParams.get('Name');
         if (nameVal) document.querySelector('[name="name"]').value = nameVal;
-
         const emailVal = urlParams.get('email') || urlParams.get('Email');
         if (emailVal) document.getElementById("email").value = emailVal;
-
         if (phoneVal) document.getElementById("phone").value = phoneVal;
-
         let dobVal = urlParams.get('dob') || urlParams.get('DOB');
         if (dobVal) {
           const yyyymmddMatch = dobVal.match(/^(\d{4})\D(\d{2})\D(\d{2})$/);
           if (yyyymmddMatch) dobVal = `${yyyymmddMatch[3]} / ${yyyymmddMatch[2]} / ${yyyymmddMatch[1]}`;
           document.getElementById("dob").value = dobVal;
         }
-
         const addressVal = urlParams.get('address') || urlParams.get('Address');
         if (addressVal) document.querySelector('[name="address"]').value = addressVal;
-
         const postcodeVal = urlParams.get('postcode') || urlParams.get('Postcode');
         if (postcodeVal) document.querySelector('[name="postcode"]').value = postcodeVal;
-
         const agentName = urlParams.get('agent_name') || urlParams.get('Agent') || urlParams.get('agent');
         if (agentName) document.getElementById("agent_name").value = agentName;
       };
 
       fillFromURL();
 
-      // 2. Fetch from DB if phone exists (this overrides URL if saved data exists)
       if (phoneVal) {
         try {
           const res = await fetch(`/api/get-lead?phone=${encodeURIComponent(phoneVal)}`);
           if (res.ok) {
             const lead = await res.json();
             if (lead) {
-              console.log("Loading saved data from database:", lead);
-              // Fill the form with DB data
               const form = document.getElementById("disrepairForm");
               Object.keys(lead).forEach(key => {
                 const input = form.querySelector(`[name="${key}"]`);
                 if (input && lead[key] !== null) {
                   input.value = lead[key];
-                  // Trigger any change events for conditional fields
                   input.dispatchEvent(new Event('change'));
                 }
               });
@@ -552,57 +501,23 @@
       }
     });
 
-    // Smart Masked DOB with Validation
+    // DOB Mask
     const dobInput = document.getElementById('dob');
-    dobInput.addEventListener('input', function (e) {
-      let v = this.value.replace(/\D/g, '');
-      if (v.length > 8) v = v.substring(0, 8);
+    if (dobInput) {
+      dobInput.addEventListener('input', function (e) {
+        let v = this.value.replace(/\D/g, '');
+        if (v.length > 8) v = v.substring(0, 8);
+        let day = v.substring(0, 2);
+        let month = v.substring(2, 4);
+        let year = v.substring(4, 8);
+        let out = "";
+        if (v.length > 0) out += day;
+        if (v.length >= 3) out += " / " + month;
+        if (v.length >= 5) out += " / " + year;
+        this.value = out;
+      });
+    }
 
-      let day = v.substring(0, 2);
-      let month = v.substring(2, 4);
-      let year = v.substring(4, 8);
-
-      // Validate Month
-      if (month.length === 2) {
-        let m = parseInt(month);
-        if (m === 0) month = "01";
-        if (m > 12) month = "12";
-      }
-
-      // Validate Day (initial max 31)
-      if (day.length === 2) {
-        let d = parseInt(day);
-        if (d === 0) day = "01";
-        if (d > 31) day = "31";
-      }
-
-      // Refine Day based on Month and Year
-      if (day.length === 2 && month.length === 2) {
-        let d = parseInt(day);
-        let m = parseInt(month);
-        let y = year.length === 4 ? parseInt(year) : 2024; // Use current year or 2024 for leap check
-
-        let maxDays = 31;
-        if ([4, 6, 9, 11].includes(m)) {
-          maxDays = 30;
-        } else if (m === 2) {
-          const isLeap = (y % 4 === 0 && y % 100 !== 0) || (y % 400 === 0);
-          maxDays = isLeap ? 29 : 28;
-        }
-
-        if (d > maxDays) {
-          day = maxDays.toString().padStart(2, '0');
-        }
-      }
-
-      let out = "";
-      if (v.length > 0) out += day;
-      if (v.length >= 3) out += " / " + month;
-      if (v.length >= 5) out += " / " + year;
-      this.value = out;
-    });
-
-    // Show/hide details based on Yes/No
     function toggleDetails(selectId, detailId) {
       const select = document.getElementById(selectId);
       const details = document.getElementById(detailId);
@@ -610,11 +525,9 @@
         select.addEventListener("change", () => {
           details.classList.toggle("hidden", select.value !== "Yes");
         });
-        // Also check initially
         details.classList.toggle("hidden", select.value !== "Yes");
       }
     }
-
 
     toggleDetails("damp", "dampDetails");
     toggleDetails("leak", "leakDetails");
@@ -628,67 +541,51 @@
     const jointDetails = document.getElementById('jointTenancyDetails');
     const individualDetails = document.getElementById('individualTenancyDetails');
 
-    tenancyOnName.addEventListener('change', () => {
-      const isNo = tenancyOnName.value === 'No';
-      tenancyDetails.classList.toggle('hidden', !isNo);
-      
-      const fields = tenancyDetails.querySelectorAll('select, input');
-      if (!isNo) {
-        fields.forEach(f => { f.required = false; f.value = ''; });
-        jointDetails.classList.add('hidden');
-        individualDetails.classList.add('hidden');
-      } else {
-        tenancyType.required = true;
-      }
-    });
+    if (tenancyOnName) {
+      tenancyOnName.addEventListener('change', () => {
+        const isNo = tenancyOnName.value === 'No';
+        tenancyDetails.classList.toggle('hidden', !isNo);
+        if (!isNo) {
+          tenancyDetails.querySelectorAll('select, input').forEach(f => { f.required = false; f.value = ''; });
+          jointDetails.classList.add('hidden');
+          individualDetails.classList.add('hidden');
+        } else {
+          tenancyType.required = true;
+        }
+      });
+    }
 
-    tenancyType.addEventListener('change', () => {
-      const val = tenancyType.value;
-      jointDetails.classList.toggle('hidden', val !== 'Joint');
-      individualDetails.classList.toggle('hidden', val !== 'Individual');
+    if (tenancyType) {
+      tenancyType.addEventListener('change', () => {
+        const val = tenancyType.value;
+        jointDetails.classList.toggle('hidden', val !== 'Joint');
+        individualDetails.classList.toggle('hidden', val !== 'Individual');
+        jointDetails.querySelectorAll('select, input').forEach(f => f.required = (val === 'Joint'));
+        individualDetails.querySelectorAll('select, input').forEach(f => f.required = (val === 'Individual'));
+      });
+    }
 
-      const jointFields = jointDetails.querySelectorAll('select, input');
-      jointFields.forEach(f => f.required = (val === 'Joint'));
-      if (val !== 'Joint') jointFields.forEach(f => f.value = '');
-
-      const individualFields = individualDetails.querySelectorAll('select, input');
-      individualFields.forEach(f => f.required = (val === 'Individual'));
-      if (val !== 'Individual') individualFields.forEach(f => f.value = '');
-    });
-
-    // Auto-expanding textareas
     function autoExpand(element) {
       element.style.height = 'auto';
       element.style.height = element.scrollHeight + 'px';
     }
 
     document.querySelectorAll('textarea').forEach(textarea => {
-      textarea.addEventListener('input', function() {
-        autoExpand(this);
-      });
-      // Initial expansion for pre-filled data
-      if (textarea.value) {
-        setTimeout(() => autoExpand(textarea), 0);
-      }
+      textarea.addEventListener('input', function() { autoExpand(this); });
+      if (textarea.value) { setTimeout(() => autoExpand(textarea), 0); }
     });
 
-    // Toast & Status Function
     function showStatus(message, isError = false) {
-      // 1. Show Toast
       const toast = document.getElementById("toast");
       toast.innerText = message;
       toast.style.backgroundColor = isError ? "#ef4444" : "#10b981";
       toast.style.visibility = "visible";
       toast.style.opacity = "1";
-      
-      // 2. Show in-form status message
       const statusEl = document.getElementById("formStatus");
       statusEl.innerText = message;
       statusEl.style.display = "block";
       statusEl.style.backgroundColor = isError ? "#fee2e2" : "#dcfce7";
       statusEl.style.color = isError ? "#dc2626" : "#16a34a";
-      statusEl.style.border = `1px solid ${isError ? '#fecaca' : '#bbf7d0'}`;
-
       setTimeout(() => {
         toast.style.opacity = "0";
         setTimeout(() => { toast.style.visibility = "hidden"; }, 500);
@@ -698,7 +595,6 @@
     const monthsArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     function convertDobToFullDate(val) {
       if (!val || typeof val !== 'string') return val;
-      // Handle DD / MM / YYYY
       if (val.includes('/')) {
         const p = val.split('/').map(x => x.trim());
         if (p.length === 3) {
@@ -709,59 +605,49 @@
       return val;
     }
 
-    // "Save Lead Data" Logic (only saves)
     document.getElementById("saveDraftBtn").addEventListener("click", function () {
       const formData = new FormData(document.getElementById("disrepairForm"));
       const data = Object.fromEntries(formData.entries());
-
       if (data.dob) data.dob = convertDobToFullDate(data.dob);
       if (!data.phone) return showStatus("Please enter a phone number to save progress.", true);
-
       fetch("/api/save-draft", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-        .then(res => res.json())
-        .then(resData => {
-          if (resData.success) {
-            showStatus("Progress saved successfully!");
-          } else {
-            showStatus("Error saving: " + (resData.error || "Unknown"), true);
-          }
-        })
-        .catch(err => showStatus("Network Error: " + err.message, true));
+      .then(res => res.json())
+      .then(resData => {
+        if (resData.success) showStatus("Progress saved successfully!");
+        else showStatus("Error saving: " + (resData.error || "Unknown"), true);
+      })
+      .catch(err => showStatus("Network Error: " + err.message, true));
     });
 
-    // Form submit (Finalize)
     document.getElementById("disrepairForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
       const data = Object.fromEntries(formData.entries());
-
       if (data.dob) data.dob = convertDobToFullDate(data.dob);
-
-      // Finalized leads can have a status here if needed, or by setting it in api/submit.js
       fetch("/api/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
       })
-        .then(async response => {
-          if (response.ok) {
-            showStatus("Lead finalized and submitted successfully!");
-            document.getElementById("disrepairForm").reset();
-            // Reset detail views
-            ["dampDetails", "leakDetails", "reportedDetails", "arrearsDetails"].forEach(id => {
-              document.getElementById(id).classList.add("hidden");
-            });
-          } else {
-            let errorMsg = response.statusText;
-            try { const errData = await response.json(); errorMsg = errData.error || errorMsg; } catch (e) { }
-            showStatus("Error submitting: " + errorMsg, true);
-          }
-        })
-        .catch(error => { showStatus("Submission error. Please try again.", true); });
+      .then(async response => {
+        if (response.ok) {
+          showStatus("Lead finalized and submitted successfully!");
+          document.getElementById("disrepairForm").reset();
+          ["dampDetails", "leakDetails", "reportedDetails", "arrearsDetails", "tenancyDetails"].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.add("hidden");
+          });
+        } else {
+          let errorMsg = response.statusText;
+          try { const errData = await response.json(); errorMsg = errData.error || errorMsg; } catch (e) { }
+          showStatus("Error submitting: " + errorMsg, true);
+        }
+      })
+      .catch(error => { showStatus("Submission error. Please try again.", true); });
     });
   </script>
 </body>
