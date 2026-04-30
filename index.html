@@ -481,15 +481,16 @@
     // Auto-fill contact details from URL or DB
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const phoneVal = urlParams.get('phone') || urlParams.get('Phone');
+      const phoneVal = urlParams.get('phone') || urlParams.get('Phone') || urlParams.get('phone_number') || urlParams.get('mobile') || urlParams.get('Mobile');
 
       const fillFromURL = () => {
         const nameVal = urlParams.get('name') || urlParams.get('Name');
         if (nameVal) document.querySelector('[name="name"]').value = nameVal;
         const emailVal = urlParams.get('email') || urlParams.get('Email');
         if (emailVal) document.getElementById("email").value = emailVal;
-        const phoneVal = urlParams.get('phone') || urlParams.get('Phone') || urlParams.get('phone_number') || urlParams.get('mobile') || urlParams.get('Mobile');
+        
         if (phoneVal) document.getElementById("phone").value = phoneVal;
+        
         let dobVal = urlParams.get('dob') || urlParams.get('DOB') || urlParams.get('date_of_birth');
         if (dobVal) {
           const yyyymmddMatch = dobVal.match(/^(\d{4})\D(\d{2})\D(\d{2})$/);
@@ -506,8 +507,7 @@
 
       fillFromURL();
 
-      const phoneVal = urlParams.get('phone') || urlParams.get('Phone') || urlParams.get('phone_number') || urlParams.get('mobile') || urlParams.get('Mobile');
-
+      if (phoneVal) {
         try {
           const res = await fetch(`/api/get-lead?phone=${encodeURIComponent(phoneVal)}`);
           if (res.ok) {
