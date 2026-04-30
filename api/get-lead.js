@@ -1,4 +1,4 @@
-const { createClient } = require("@supabase/supabase-js");
+const { createSupabaseClient, normalizeLead } = require("./_supabaseClient");
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'GET') {
@@ -10,22 +10,21 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Phone number is required' });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: "Server configuration error" });
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   try {
-    // Fetch the most recent submission with this phone number
+    const supabase = createSupabaseClient();
+    const strippedPhone = phone.replace(/\D/g, '');
+
+    // Search by both raw and stripped phone to be robust against dialer formatting
+    const orQuery = strippedPhone && strippedPhone !== phone
+      ? `phone.eq."${phone}",mobile_number.eq."${phone}",phone.eq."${strippedPhone}",mobile_number.eq."${strippedPhone}"`
+      : `phone.eq."${phone}",mobile_number.eq."${phone}"`;
+
+    // Fetch the most recent submission (created_at is more reliable than timestamp)
     const { data, error } = await supabase
       .from('submissions')
       .select('*')
-      .eq('phone', phone)
-      .order('timestamp', { ascending: false })
+      .or(orQuery)
+      .order('created_at', { ascending: false })
       .limit(1);
 
     if (error) {
@@ -33,7 +32,11 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
 
-    return res.status(200).json(data && data.length > 0 ? data[0] : null);
+    if (data && data.length > 0) {
+      return res.status(200).json(normalizeLead(data[0]));
+    }
+    
+    return res.status(200).json(null);
   } catch (err) {
     console.error("Unexpected error:", err);
     return res.status(500).json({ error: "An unexpected error occurred." });

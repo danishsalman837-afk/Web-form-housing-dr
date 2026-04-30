@@ -1,33 +1,35 @@
-const { createClient } = require("@supabase/supabase-js");
+const { createSupabaseClient, normalizeLead } = require("./_supabaseClient");
 
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    return res.status(500).json({ error: "Server configuration error" });
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   try {
-    const data = req.body;
+    const supabase = createSupabaseClient();
+    const data = normalizeLead(req.body);
     
+    // Save a backup of the original data for audit if needed
+    if (!data.agent_data) {
+        data.agent_data = JSON.parse(JSON.stringify(req.body));
+    }
+
     if (!data.phone) {
         return res.status(400).json({ error: "Phone number is required to save progress." });
     }
+
+    const strippedPhone = data.phone.replace(/\D/g, '');
+    const orQuery = strippedPhone && strippedPhone !== data.phone
+      ? `phone.eq."${data.phone}",mobile_number.eq."${data.phone}",phone.eq."${strippedPhone}",mobile_number.eq."${strippedPhone}"`
+      : `phone.eq."${data.phone}",mobile_number.eq."${data.phone}"`;
 
     // Attempt to update existing with this phone number or insert new
     // We search for most recent record with this phone
     const { data: existing, error: findError } = await supabase
       .from('submissions')
       .select('id')
-      .eq('phone', data.phone)
-      .order('timestamp', { ascending: false })
+      .or(orQuery)
+      .order('created_at', { ascending: false })
       .limit(1);
 
     if (findError) return res.status(500).json({ error: findError.message });

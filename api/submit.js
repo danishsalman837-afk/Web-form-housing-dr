@@ -1,42 +1,34 @@
-const { createClient } = require("@supabase/supabase-js");
+const { createSupabaseClient, normalizeLead } = require("./_supabaseClient");
 
 module.exports = async function handler(req, res) {
-  // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // Ensure env variables are configured in Vercel
-  const supabaseUrl = process.env.SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_ANON_KEY;
-
-  if (!supabaseUrl || !supabaseKey) {
-    console.error("Missing Supabase environment variables");
-    return res.status(500).json({ error: "Server configuration error" });
-  }
-
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
   try {
-    const data = req.body;
-    
-    // We already generate a timestamp in DB default NOW(), but we can add one if needed.
-    // data.timestamp is handled by DB.
+    const supabase = createSupabaseClient();
+    const data = normalizeLead(req.body);
     
     // 1. Check if an existing entry exists for this phone number
     let isUpdate = false;
     let existingId = null;
 
     if (data.phone) {
+      const strippedPhone = data.phone.replace(/\D/g, '');
+      const orQuery = strippedPhone && strippedPhone !== data.phone
+        ? `phone.eq."${data.phone}",mobile_number.eq."${data.phone}",phone.eq."${strippedPhone}",mobile_number.eq."${strippedPhone}"`
+        : `phone.eq."${data.phone}",mobile_number.eq."${data.phone}"`;
+
       const { data: existingLead } = await supabase
         .from('submissions')
         .select('id')
-        .eq('phone', data.phone)
-        .maybeSingle();
+        .or(orQuery)
+        .order('created_at', { ascending: false })
+        .limit(1);
         
-      if (existingLead) {
+      if (existingLead && existingLead.length > 0) {
         isUpdate = true;
-        existingId = existingLead.id;
+        existingId = existingLead[0].id;
       }
     }
 
