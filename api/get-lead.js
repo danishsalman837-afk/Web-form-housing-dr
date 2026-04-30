@@ -29,8 +29,9 @@ module.exports = async function handler(req, res) {
     }
 
     const uniqueVariations = [...new Set(variations.filter(v => v))];
+    // Search BOTH phone and mobile_number columns to find older leads
     const orQuery = uniqueVariations
-      .map(v => `phone.eq."${v}"`)
+      .map(v => `phone.eq."${v}",mobile_number.eq."${v}"`)
       .join(',');
 
 
