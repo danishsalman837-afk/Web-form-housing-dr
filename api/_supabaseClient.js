@@ -35,7 +35,6 @@ function normalizeLead(lead) {
   }
 
   // 1. Core Contact & Basic Details
-  n('phone', 'mobile_number');
   n('phone', 'Mobile');
   n('email', 'Email');
   n('address', 'Address');
