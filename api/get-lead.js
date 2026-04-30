@@ -13,11 +13,20 @@ module.exports = async function handler(req, res) {
   try {
     const supabase = createSupabaseClient();
     const strippedPhone = phone.replace(/\D/g, '');
+    let variations = [phone, strippedPhone];
+    
+    // Handle UK variations (07... vs 447...)
+    if (strippedPhone.startsWith('44') && strippedPhone.length > 2) {
+      variations.push('0' + strippedPhone.substring(2));
+    } else if (strippedPhone.startsWith('0') && strippedPhone.length > 1) {
+      variations.push('44' + strippedPhone.substring(1));
+    }
 
-    // Search by both raw and stripped phone to be robust against dialer formatting
-    const orQuery = strippedPhone && strippedPhone !== phone
-      ? `phone.eq."${phone}",mobile_number.eq."${phone}",phone.eq."${strippedPhone}",mobile_number.eq."${strippedPhone}"`
-      : `phone.eq."${phone}",mobile_number.eq."${phone}"`;
+    const uniqueVariations = [...new Set(variations.filter(v => v))];
+    const orQuery = uniqueVariations
+      .map(v => `phone.eq."${v}",mobile_number.eq."${v}"`)
+      .join(',');
+
 
     // Fetch the most recent submission (created_at is more reliable than timestamp)
     const { data, error } = await supabase

@@ -19,9 +19,18 @@ module.exports = async function handler(req, res) {
     }
 
     const strippedPhone = data.phone.replace(/\D/g, '');
-    const orQuery = strippedPhone && strippedPhone !== data.phone
-      ? `phone.eq."${data.phone}",mobile_number.eq."${data.phone}",phone.eq."${strippedPhone}",mobile_number.eq."${strippedPhone}"`
-      : `phone.eq."${data.phone}",mobile_number.eq."${data.phone}"`;
+    let variations = [data.phone, strippedPhone];
+    
+    if (strippedPhone.startsWith('44') && strippedPhone.length > 2) {
+      variations.push('0' + strippedPhone.substring(2));
+    } else if (strippedPhone.startsWith('0') && strippedPhone.length > 1) {
+      variations.push('44' + strippedPhone.substring(1));
+    }
+
+    const uniqueVariations = [...new Set(variations.filter(v => v))];
+    const orQuery = uniqueVariations
+      .map(v => `phone.eq."${v}",mobile_number.eq."${v}"`)
+      .join(',');
 
     // Attempt to update existing with this phone number or insert new
     // We search for most recent record with this phone

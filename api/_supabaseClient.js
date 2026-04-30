@@ -2,7 +2,9 @@ const { createClient } = require("@supabase/supabase-js");
 
 function createSupabaseClient() {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  // Use Anon Key by default, fallback to Service Role if set (Vercel env vars)
+  const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
+  
   if (!url || !key) {
     throw new Error("Missing Supabase environment variables");
   }
@@ -27,41 +29,60 @@ function normalizeLead(lead) {
     }
   };
 
-  // Mappings between newer form keys and older/dashboard keys
+  // Name fallback for older leads (combining first/last into full name)
+  if (!lead.name && (lead.first_name || lead.lastName || lead.last_name)) {
+    lead.name = ((lead.first_name || '') + ' ' + (lead.lastName || lead.last_name || '')).trim();
+  }
+
+  // 1. Core Contact & Basic Details
+  n('phone', 'mobile_number');
+  n('phone', 'Mobile');
+  n('email', 'Email');
+  n('address', 'Address');
+  n('postcode', 'Postcode');
   n('dob', 'dateOfBirth');
   n('livingDuration', 'tenancyDuration');
+  
+  // 2. Disrepair Main Toggles (Old names vs New names)
   n('damp', 'hasDampMould');
+  n('leak', 'hasLeaks');
+  n('reported', 'reportedOverMonth');
+  n('arrears', 'rentalArrears');
+  n('issues_electrics', 'faultyElectrics');
+  n('issues_heating', 'heatingIssues');
+  n('issues_structural', 'structuralDamage');
+
+  // 3. Sub-questions & Specific Details
+  n('dampLocation', 'dampLocation');
   n('dampRooms', 'roomsAffected');
   n('dampSurface', 'affectedSurface');
   n('dampDuration', 'issueDuration');
   n('dampCause', 'issueCause');
   n('dampDamage', 'damageBelongings');
   n('dampHealth', 'healthProblems');
-  n('leak', 'hasLeaks');
-  n('leakCracks', 'cracksDamage');
-  n('issues_electrics', 'faultyElectrics');
-  n('issues_heating', 'heatingIssues');
-  n('issues_structural', 'structuralDamage');
-  n('reported', 'reportedOverMonth');
-  n('arrears', 'rentalArrears');
-
-  // Sub-questions and additional details
-  n('dampLocation', 'dampLocation');
+  
   n('leakLocation', 'leakLocation');
   n('leakSource', 'leakSource');
   n('leakStart', 'leakStart');
   n('leakDamage', 'leakDamage');
+  n('leakCracks', 'cracksDamage');
   n('leakBelongings', 'leakBelongings');
+  
   n('reportCount', 'reportCount');
   n('reportFirst', 'reportFirst');
   n('reportLast', 'reportLast');
   n('reportResponse', 'reportResponse');
   n('reportAttempt', 'reportAttempt');
   n('reportStatus', 'reportStatus');
+  
   n('arrearsAmount', 'arrearsAmount');
   n('alreadySubmitted', 'alreadySubmitted');
   n('additionalNotes', 'additionalNotes');
+  
+  // 4. Agent Info
   n('agent_name', 'agentName');
+  n('agent_name', 'dialler');
+  n('agent_name', 'agent');
 
   return lead;
 }
