@@ -47,11 +47,9 @@ module.exports = async function handler(req, res) {
       return res.status(500).json({ error: error.message });
     }
 
-    if (data && data.length > 0) {
-      return res.status(200).json(normalizeLead(data[0]));
-    }
-    
-    return res.status(200).json(null);
+    const hasServiceKey = !!process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (data && data.length > 0) return res.status(200).json({ ...normalizeLead(data[0]), _debug: { hasServiceKey } });
+    return res.status(200).json({ result: null, _debug: { hasServiceKey } });
   } catch (err) {
     console.error("Unexpected error:", err);
     return res.status(500).json({ error: err.message, stack: err.stack });
