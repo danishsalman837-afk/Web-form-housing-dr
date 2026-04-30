@@ -26,6 +26,10 @@ function normalizeLead(lead) {
       if (lead[dbKey] === undefined || lead[dbKey] === null) {
         lead[dbKey] = lead[formKey];
       }
+      // CRITICAL: Remove the formKey if it's different from dbKey so Supabase doesn't crash
+      if (formKey !== dbKey) {
+        delete lead[formKey];
+      }
     }
   };
 
