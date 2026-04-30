@@ -55,6 +55,6 @@ module.exports = async function handler(req, res) {
     return res.status(200).json(null);
   } catch (err) {
     console.error("Unexpected error:", err);
-    return res.status(500).json({ error: "An unexpected error occurred." });
+    return res.status(500).json({ error: err.message, stack: err.stack });
   }
 }
