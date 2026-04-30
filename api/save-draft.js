@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
       .from('submissions')
       .select('id')
       .or(orQuery)
-      .order('created_at', { ascending: false })
+      .order('timestamp', { ascending: false })
       .limit(1);
 
     if (findError) return res.status(500).json({ error: findError.message });

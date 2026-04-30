@@ -28,12 +28,12 @@ module.exports = async function handler(req, res) {
       .join(',');
 
 
-    // Fetch the most recent submission (created_at is more reliable than timestamp)
+    // Fetch the most recent submission
     const { data, error } = await supabase
       .from('submissions')
       .select('*')
       .or(orQuery)
-      .order('created_at', { ascending: false })
+      .order('timestamp', { ascending: false })
       .limit(1);
 
     if (error) {
