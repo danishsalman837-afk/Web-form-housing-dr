@@ -39,35 +39,50 @@ function normalizeLead(lead) {
   }
 
   // 1. Core Contact & Basic Details
+  n('phone', 'phone');
   n('phone', 'Mobile');
-  n('email', 'Email');
+  n('email', 'email');
+  n('address', 'address');
   n('address', 'Address');
-  n('postcode', 'Postcode');
+  n('postcode', 'postcode');
+  n('dob', 'dob');
   n('dob', 'dateOfBirth');
+  n('livingDuration', 'livingDuration');
   n('livingDuration', 'tenancyDuration');
   
-  // 2. Disrepair Main Toggles (Old names vs New names)
+  // 2. Disrepair Main Toggles
+  n('damp', 'damp');
   n('damp', 'hasDampMould');
+  n('leak', 'leak');
   n('leak', 'hasLeaks');
+  n('reported', 'reported');
   n('reported', 'reportedOverMonth');
+  n('arrears', 'arrears');
   n('arrears', 'rentalArrears');
   n('issues_electrics', 'faultyElectrics');
   n('issues_heating', 'heatingIssues');
   n('issues_structural', 'structuralDamage');
 
-  // 3. Sub-questions & Specific Details
+  // 3. Sub-questions & Specific Details (CamelCase as per your SQL)
   n('dampLocation', 'dampLocation');
+  n('dampRooms', 'dampRooms');
   n('dampRooms', 'roomsAffected');
+  n('dampSurface', 'dampSurface');
   n('dampSurface', 'affectedSurface');
+  n('dampDuration', 'dampDuration');
   n('dampDuration', 'issueDuration');
+  n('dampCause', 'dampCause');
   n('dampCause', 'issueCause');
+  n('dampDamage', 'dampDamage');
   n('dampDamage', 'damageBelongings');
+  n('dampHealth', 'dampHealth');
   n('dampHealth', 'healthProblems');
   
   n('leakLocation', 'leakLocation');
   n('leakSource', 'leakSource');
   n('leakStart', 'leakStart');
   n('leakDamage', 'leakDamage');
+  n('leakCracks', 'leakCracks');
   n('leakCracks', 'cracksDamage');
   n('leakBelongings', 'leakBelongings');
   
@@ -91,10 +106,12 @@ function normalizeLead(lead) {
   n('other_tenant_name', 'other_tenant_name');
   n('actual_tenant_fullname', 'actual_tenant_fullname');
 
-  // 5. Agent Info
+  // 5. System Fields (Must exist in DB)
+  n('leadStatus', 'leadStatus');
+  n('is_submitted', 'is_submitted');
+  n('agent_data', 'agent_data');
+  n('agent_name', 'agent_name');
   n('agent_name', 'agentName');
-  n('agent_name', 'dialler');
-  n('agent_name', 'agent');
 
   return lead;
 }
