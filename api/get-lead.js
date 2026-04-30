@@ -24,7 +24,7 @@ module.exports = async function handler(req, res) {
 
     const uniqueVariations = [...new Set(variations.filter(v => v))];
     const orQuery = uniqueVariations
-      .map(v => `phone.eq."${v}",mobile_number.eq."${v}"`)
+      .map(v => `phone.eq."${v}"`)
       .join(',');
 
 
