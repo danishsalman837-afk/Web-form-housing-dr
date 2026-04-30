@@ -481,7 +481,8 @@
     // Auto-fill contact details from URL or DB
     window.addEventListener('DOMContentLoaded', async () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const phoneVal = urlParams.get('phone') || urlParams.get('Phone') || urlParams.get('phone_number') || urlParams.get('mobile') || urlParams.get('Mobile');
+      const phoneVal = urlParams.get('phone') || urlParams.get('Phone') || urlParams.get('phone_number') || urlParams.get('mobile') || urlParams.get('Mobile') || urlParams.get('mobile_number');
+      console.log("Agent Form: URL Phone detected:", phoneVal);
 
       const fillFromURL = () => {
         const nameVal = urlParams.get('name') || urlParams.get('Name');
@@ -512,19 +513,26 @@
           const res = await fetch(`/api/get-lead?phone=${encodeURIComponent(phoneVal)}`);
           if (res.ok) {
             const lead = await res.json();
-            if (lead) {
+            if (lead && !lead.error) {
+              console.log("Agent Form: DB record found:", lead);
               const form = document.getElementById("disrepairForm");
               Object.keys(lead).forEach(key => {
                 const input = form.querySelector(`[name="${key}"]`);
-                if (input && lead[key] !== null) {
+                if (input && lead[key] !== null && lead[key] !== undefined && lead[key] !== '') {
                   input.value = lead[key];
                   input.dispatchEvent(new Event('change'));
                 }
               });
+            } else if (lead && lead.error) {
+              console.error("Agent Form: API Error:", lead.error);
+            } else {
+              console.log("Agent Form: No existing record for this phone.");
             }
+          } else {
+            console.warn("Agent Form: API fetch not OK", res.status);
           }
         } catch (err) {
-          console.error("Failed to load saved lead data:", err);
+          console.error("Agent Form: Failed to load saved lead data:", err);
         }
       }
     });

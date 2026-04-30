@@ -78,7 +78,16 @@ function normalizeLead(lead) {
   n('alreadySubmitted', 'alreadySubmitted');
   n('additionalNotes', 'additionalNotes');
   
-  // 4. Agent Info
+  // 4. Tenancy & Property Details
+  n('infestation', 'infestation');
+  n('property_type', 'property_type');
+  n('tenancy_on_name', 'tenancy_on_name');
+  n('tenancy_type', 'tenancy_type');
+  n('is_name_on_joint', 'is_name_on_joint');
+  n('other_tenant_name', 'other_tenant_name');
+  n('actual_tenant_fullname', 'actual_tenant_fullname');
+
+  // 5. Agent Info
   n('agent_name', 'agentName');
   n('agent_name', 'dialler');
   n('agent_name', 'agent');
