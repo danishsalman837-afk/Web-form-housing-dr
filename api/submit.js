@@ -1,82 +1,70 @@
-const { createSupabaseClient, normalizeLead } = require("./_supabaseClient");
+const { createSupabaseClient, assertEnv } = require("./_supabaseClient");
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
+  const route = req.query.route || req.body.route;
+  const method = req.method;
+
+  // DIAGNOSTIC PING
+  if (method === 'GET' && route === 'ping') {
+      const url = process.env.SUPABASE_URL || 'NOT_SET';
+      const projectId = url.split('.')[0].split('//')[1] || 'UNKNOWN';
+      const supabase = createSupabaseClient('service');
+      const { data: cols } = await supabase.from('submissions').select('*').limit(1);
+      return res.status(200).json({ 
+          status: "online", 
+          projectId, 
+          urlMasked: url.substring(0, 12) + "...",
+          columns: cols && cols.length > 0 ? Object.keys(cols[0]) : [] 
+      });
   }
+
+  if (method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  if (!assertEnv('service', res)) return;
+
+  const supabase = createSupabaseClient('service');
+  const data = req.body;
+  const originalRawData = JSON.parse(JSON.stringify(data));
 
   try {
-    const supabase = createSupabaseClient();
-    const data = normalizeLead(req.body);
-    
-    // 1. Check if an existing entry exists for this phone number
-    let isUpdate = false;
-    let existingId = null;
+    // 1. Mapping to DB columns (CamelCase)
+    const mapping = {
+      dateOfBirth: 'dob', tenancyDuration: 'livingDuration', hasDampMould: 'damp', roomsAffected: 'dampRooms',
+      heatingIssues: 'issuesHeating', faultyElectrics: 'issuesElectrics', structuralDamage: 'issuesStructural',
+      agentName: 'agentName', rentalArrears: 'arrears', reportedOverMonth: 'reported'
+    };
 
-    if (data.phone) {
-      const strippedPhone = data.phone.replace(/\D/g, '');
-      let variations = [data.phone, strippedPhone];
-      
-      if (strippedPhone.startsWith('44') && strippedPhone.length > 2) {
-        variations.push('0' + strippedPhone.substring(2));
-        variations.push(strippedPhone.substring(2));
-      } else if (strippedPhone.startsWith('0') && strippedPhone.length > 1) {
-        variations.push('44' + strippedPhone.substring(1));
-        variations.push(strippedPhone.substring(1));
-      } else if (strippedPhone.length >= 10) {
-        variations.push('0' + strippedPhone);
-        variations.push('44' + strippedPhone);
-      }
-
-      const uniqueVariations = [...new Set(variations.filter(v => v))];
-      const orQuery = uniqueVariations
-        .map(v => `phone.eq."${v}"`)
-        .join(',');
-
-      const { data: existingLead } = await supabase
-        .from('submissions')
-        .select('id')
-        .or(orQuery)
-        .order('timestamp', { ascending: false })
-        .limit(1);
-        
-      if (existingLead && existingLead.length > 0) {
-        isUpdate = true;
-        existingId = existingLead[0].id;
-      }
+    for (const [formKey, dbKey] of Object.entries(mapping)) {
+      if (data[formKey] !== undefined) data[dbKey] = data[formKey];
     }
 
-    let response;
-    if (isUpdate) {
-        const updateData = { ...data, leadStatus: 'New Lead' };
-        delete updateData.id;
+    // 2. Set Status for visibility (Saving to both old and new columns)
+    data.isSubmitted = true;
+    data.is_submitted = true; 
+    data.leadStatus = 'New Lead';
+    data.leadStage = 'New Lead';
+    data.lead_stage = 'New Lead';
+    data.timestamp = new Date().toISOString();
+    data.agentData = originalRawData;
+    data.agent_data = originalRawData;
+    data.agentName = data.agentName || data.agent_name;
+    data.agent_name = data.agentName;
 
-        response = await supabase
-            .from('submissions')
-            .update(updateData)
-            .eq('id', existingId)
-            .select();
+    const rawPhone = data.phone || data.mobileNumber || data.mobile_number;
+    if (!rawPhone) return res.status(400).json({ error: "Phone required" });
+
+    // 3. Search and Update or Insert
+    const { data: existing } = await supabase.from('submissions').select('id').eq('phone', rawPhone).limit(1);
+
+    if (existing && existing.length > 0) {
+      const { data: updated, error } = await supabase.from('submissions').update(data).eq('id', existing[0].id).select();
+      if (error) throw error;
+      return res.status(200).json({ success: true, message: "Updated", lead: updated[0] });
     } else {
-        // Ensure default status for new submissions is 'New Lead'
-        if (!data.leadStatus || data.leadStatus === 'Agent Saved') {
-            data.leadStatus = 'New Lead';
-        }
-        
-        response = await supabase
-            .from('submissions')
-            .insert([data])
-            .select();
+      const { data: inserted, error } = await supabase.from('submissions').insert([data]).select();
+      if (error) throw error;
+      return res.status(200).json({ success: true, message: "Submitted", lead: inserted[0] });
     }
-
-    if (response.error) {
-      console.error("Supabase Error:", response.error);
-      return res.status(500).json({ success: false, error: response.error.message });
-    }
-
-    // Success response
-    return res.status(200).json({ success: true, message: isUpdate ? "Lead Finalised and Updated" : "Form submitted successfully" });
   } catch (err) {
-    console.error("Unexpected error:", err);
-    return res.status(500).json({ success: false, error: "An unexpected error occurred." });
+    return res.status(500).json({ error: err.message });
   }
-}
+};

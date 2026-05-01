@@ -1,82 +1,48 @@
-const { createSupabaseClient, normalizeLead } = require("./_supabaseClient");
+const { createSupabaseClient, assertEnv } = require("./_supabaseClient");
 
 module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method Not Allowed' });
-  }
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method Not Allowed' });
+  if (!assertEnv('service', res)) return;
+
+  const supabase = createSupabaseClient('service');
+  const data = req.body;
+  const originalRawData = JSON.parse(JSON.stringify(data));
 
   try {
-    const supabase = createSupabaseClient();
-    const data = normalizeLead(req.body);
-    
-    // Save a backup of the original data for audit if needed
-    if (!data.agent_data) {
-        data.agent_data = JSON.parse(JSON.stringify(req.body));
+    const mapping = {
+      dateOfBirth: 'dob', tenancyDuration: 'livingDuration', hasDampMould: 'damp', roomsAffected: 'dampRooms',
+      agentName: 'agentName'
+    };
+
+    for (const [formKey, dbKey] of Object.entries(mapping)) {
+      if (data[formKey] !== undefined) data[dbKey] = data[formKey];
     }
 
-    if (!data.phone) {
-        return res.status(400).json({ error: "Phone number is required to save progress." });
-    }
+    data.isSubmitted = false;
+    data.is_submitted = false;
+    data.leadStatus = 'Agent Saved';
+    data.leadStage = 'Draft';
+    data.lead_stage = 'Draft';
+    data.timestamp = new Date().toISOString();
+    data.agentData = originalRawData;
+    data.agent_data = originalRawData;
+    data.agentName = data.agentName || data.agent_name;
 
-    const strippedPhone = data.phone.replace(/\D/g, '');
-    let variations = [data.phone, strippedPhone];
-    
-    if (strippedPhone.startsWith('44') && strippedPhone.length > 2) {
-      variations.push('0' + strippedPhone.substring(2));
-      variations.push(strippedPhone.substring(2));
-    } else if (strippedPhone.startsWith('0') && strippedPhone.length > 1) {
-      variations.push('44' + strippedPhone.substring(1));
-      variations.push(strippedPhone.substring(1));
-    } else if (strippedPhone.length >= 10) {
-      variations.push('0' + strippedPhone);
-      variations.push('44' + strippedPhone);
-    }
+    const rawPhone = data.phone || data.mobileNumber;
+    if (!rawPhone) return res.status(400).json({ error: "Phone required" });
 
-    const uniqueVariations = [...new Set(variations.filter(v => v))];
-    const orQuery = uniqueVariations
-      .map(v => `phone.eq."${v}"`)
-      .join(',');
+    const { data: existing } = await supabase.from('submissions').select('id').eq('phone', rawPhone).limit(1);
 
-    // Attempt to update existing with this phone number or insert new
-    // We search for most recent record with this phone
-    const { data: existing, error: findError } = await supabase
-      .from('submissions')
-      .select('id')
-      .or(orQuery)
-      .order('timestamp', { ascending: false })
-      .limit(1);
-
-    if (findError) return res.status(500).json({ error: findError.message });
-
-    let response;
     if (existing && existing.length > 0) {
-        // Ensure status is 'Agent Saved' for drafts so they don't hit the dashboard yet
-        if (!data.leadStatus || data.leadStatus === 'Agent Saved') {
-            data.leadStatus = 'Agent Saved';
-        }
-        response = await supabase
-            .from('submissions')
-            .update(data)
-            .eq('id', existing[0].id)
-            .select();
+      const { data: updated, error } = await supabase.from('submissions').update(data).eq('id', existing[0].id).select();
+      if (error) throw error;
+      return res.status(200).json({ success: true, message: "Draft updated", lead: updated[0] });
     } else {
-        // Insert
-        // Ensure status is 'Agent Saved' for new drafts
-        data.leadStatus = 'Agent Saved';
-        response = await supabase
-            .from('submissions')
-            .insert([data])
-            .select();
+      const { data: inserted, error } = await supabase.from('submissions').insert([data]).select();
+      if (error) throw error;
+      return res.status(200).json({ success: true, message: "Draft saved", lead: inserted[0] });
     }
-
-    if (response.error) {
-      console.error("Supabase Error:", response.error);
-      return res.status(500).json({ success: false, error: response.error.message });
-    }
-
-    return res.status(200).json({ success: true, lead: response.data[0] });
   } catch (err) {
-    console.error("Unexpected error:", err);
-    return res.status(500).json({ success: false, error: "An unexpected error occurred." });
+    return res.status(500).json({ error: err.message });
   }
-}
+};
